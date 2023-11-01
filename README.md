@@ -34,4 +34,35 @@ Apart from these, human intervention may be required for the following:
 
 ## Use Case
 
+Use Case: Merge to `main` branch triggers the production deployment workflow
+
+Problem:
+The problem with not having an automated deployment pipeline when a release is created is that it introduces a higher likelihood of human error, slows down the deployment process, leads to potential inconsistencies between environments, hinders reproducibility of deployments, and limits scalability. Manual deployments are more time-consuming, less reliable, and can result in mistakes such as deploying the wrong version or missing critical configuration steps. This can ultimately erode confidence in the release process, particularly in high-stakes environments like production. Automated pipelines, on the other hand, offer consistency, reliability, and efficiency, providing a smoother and more reliable path to deploying releases in a controlled and predictable manner.
+
+Preconditions:
+- A DevOps pipeline is set up with Terraform for infrastructure provisioning.
+- The main branch is designated as the target for the production deployment.
+- The development team and DevOps personnel have access to the necessary tools and permissions to merge code to the main branch and trigger the deployment workflow.
+
+Main Flow:
+
+1. A release engineer creates and prepares a new `release` branch from the `dev` branch. Then, the release engineer initiates a pull request, requesting that their changes be merged into the main branch. Code reviews, automated tests, and validations are performed as part of the PR process. In case, of errors, new code is committed on the release branch which runs the pipeline again.
+1. Once the code review is approved and all tests pass, the PR is approved for merging. The release engineer merges the changes into the `main` branch. The merge to the `main` branch triggers an automatic deployment workflow within the DevOps pipeline.
+1. The pipeline uses Terraform to provision or update the required infrastructure components on the cloud platform, such as servers, databases, and networking. Then the pipeline automatically deploys the application code to the provisioned infrastructure.
+1. Monitoring and alerting mechanisms are active, continuously collecting data and promptly notifying the team in case of any issues or anomalies.
+
+Subflows:
+
+Rollback Mechanism (Alternative Flow):
+- If issues are detected during deployment or integration testing, the pipeline can initiate an automated rollback to the last stable version of the application.
+
+Manual Intervention (Alternative Flow):
+- In case of exceptional circumstances or issues not addressed by the pipeline, the team may need to perform manual interventions or configurations to resolve the problem.
+
+Documentation and Reporting (Optional Subflow):
+- The pipeline generates documentation and reports for tracking infrastructure changes, which can be accessed by team members for reference and analysis.
+
+This use case describes how merging code into the main branch triggers the deployment workflow, covering the primary flow, subflows, and alternative flows that ensure an efficient and reliable deployment process while maintaining the quality and stability of the Node.js application.
+
+
 ## Pipeline Design
