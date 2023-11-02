@@ -6,6 +6,9 @@
 - Jayraj Mulani (_jmulani2_)
 - Mitanshu Reshamwala (_mresham_)
 
+### Fork Repo Link:
+https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project
+
 ## Problem Statement and Description
 
 ### _From Chaos to Control: Terraforming a New DevOps Era_
@@ -63,10 +66,13 @@ This use case describes how merging code into the main branch triggers the deplo
 
 ### Gitflow
 
+<img src="images/gitflow.png" style="width: 70%"/>
 
 An `upstream` branch on our repository stays in sync with the remote `main` branch of the course's coffee-project. Other custom features can be developed on `feature` branches on our repository. Changes on both these branches then get merged to the `dev` branch. Once all the development changes are ready for release, changes are pushed to the `release` branch where the changes can be tested and verified in a pre-release environment. Once these changes are tested and verified, changes are pushed to the `main` branch which build and deploys the website on production.
 
 ### Deployment Pipelines
+
+<img src="images/deploy.png" style="width: 70%"/>
 
 For deployment, we run 4 different pipelines via Github Action to serve 4 main purpose. Based on the gitflow above we have 3 critical branches: `dev`, `release` and `main`
 
@@ -105,6 +111,8 @@ Whenever a pull request is merged to `main` branch, the production pipeline is t
 - Run deployment: Finally, the docker image is pulled on the resources created and runs the docker container which serves the wesbite on the specified port. 
 
 4. Monitoring Health [Stretch Goal]
+
+<img src="images/monitor.png" style="width: 70%"/>
 
 This pipeline is used to periodically monitor the resources and the website. If the website is unreachable for the end user, new resources are created and latest version is deployed automatically to reduce manual intervention and keep downtime to the very minimum.
 
