@@ -71,22 +71,54 @@ An `upstream` branch on our repository stays in sync with the remote `main` bran
 
 ### Deployment Pipelines
 
-For deployment, we run 3 different pipelines via Github Action to serve 3 main purpose. Based on the gitflow above we have 3 critical branches: `dev`, `release` and `main`
+For deployment, we run 4 different pipelines via Github Action to serve 4 main purpose. Based on the gitflow above we have 3 critical branches: `dev`, `release` and `main`
 
 1. Branch Protection 
 
+This pipeline maintains sanity of the codebase and protects the branches by restricting introduction of certain errors. 
 
-On Pull request created or reopened that targets either the `dev`, `release` or `main` branches, a github action pipeline will run which will run linting using ESLint and tests using Mocha. The pull requests will be allowed to merge only after these tasks pass successfully. This pipeline maintains sanity of the codebase and protects the branches by restricting introduction of certain errors.
+On Pull request created or reopened that targets either the `dev`, `release` or `main` branches, a github action pipeline will run which will run linting using ESLint and tests using Mocha. The pull requests will be allowed to merge only after these tasks pass successfully. 
 
 2. Pre-release Deployment
 
-The purpose of this pipeline is to create a pre-release environment, build, deploy and verify the release just before launching it to production. This allows to verify if the changes are stable in an environment which closely resembles production. 
-Whenever a pull request is merged to `release` branch, the pre-release pipeline is triggered. 
+The primary objective of this pipeline is to establish a pre-release environment, where it builds, deploys, and verifies the release just prior to its production launch. This process enables us to confirm the stability of the changes in an environment closely mirroring the production environment.
 
+Whenever a pull request is merged to `release` branch, the pre-release pipeline is triggered. 
+- Run ESLint: The linting tool ESLint is used to run linting on the changed files.
+- Run Tests using Mocha: The testing tool Mocha is used to run tests.
+- Build Docker: A Docker image is built with a pre-release tag.
+- Push Image to DockerHub: The image created in the earlier step is uploaded to DockerHub (or any other container registery)
+- Provision resources using Terraform: Once the docker image is ready, Terraform scripts are run to provision relevant resources. These resources are for pre-release and are different from production Terraform is idempotent and hence if resources are already created, this step is skipped.
+- Configure resources using Ansible: Once the resources are available, Ansible is used to configure dependencies on the createed resource. Ansible is also idempotent and hence if there is no change in configuration this step performs no changes. 
+- Run deployment: Finally, the docker image is pulled on the resources created and runs the docker container which serves the wesbite on the specified port. 
 
 
 3. Production Deployment
 
+This pipeline is used for production deployment. 
 
+Whenever a pull request is merged to `main` branch, the production pipeline is triggered. 
+- Run ESLint: The linting tool ESLint is used to run linting on the changed files.
+- Run Tests using Mocha: The testing tool Mocha is used to run tests.
+- Build Docker: A Docker image is built with a new version tag that uses semantic versioning (x.x.x). _latest_ tag is also tagged to this new image.
+- Push Image to DockerHub: The image created in the earlier step is uploaded to DockerHub (or any other container registery)
+- Create release on Github: A release tag is created on the `main` branch at the given commit
+- Provision resources using Terraform: Once the docker image is ready, Terraform scripts are run to provision relevant resources. These resources are for production and are different from pre-release. Terraform is idempotent and hence if resources are already created, this step performs no operations.
+- Configure resources using Ansible: Once the resources are available, Ansible is used to configure dependencies on the createed resource. Ansible is also idempotent and hence if there is no change in configuration this step performs no operations. 
+- Run deployment: Finally, the docker image is pulled on the resources created and runs the docker container which serves the wesbite on the specified port. 
 
+4. Monitoring Health [Stretch Goal]
 
+This pipeline is used to periodically monitor the resources and the website. If the website is unreachable for the end user, new resources are created and latest version is deployed automatically to reduce manual intervention and keep downtime to the very minimum.
+
+Whenever a production deployment pipeline is succedded, a health-check cron job is started which runs every minute. 
+
+If this health-check succeeds, there is no action and the cron continues to execute. 
+
+If this health-check fails, an alert is sent to the communication channels for the engineers to start investigation and perform any manual intervention if needed. Meanwhile this pipeline starts the process of automatically bringing the website back up by creating a completely new resource. 
+- Provision resources using Terraform: Terraform scripts are run to provision relevant resources. These resources are for production and are different from existing production resources.
+- Configure resources using Ansible: Once the resources are available, Ansible is used to configure dependencies on the createed resource.
+- Run deployment: Finally, the latest docker image is pulled on the resources created and runs the docker container which serves the wesbite on the specified port. 
+- Migrate traffic to new resources: The loadbalancer is then configured to route traffic from the old resources to the new resources that are setup in the previous step
+- Deployment pipeline succeeded: The deployment pipeline is considered succeded and this triggers the health-check again
+- Clean up old resources using Terraform: In this step server and application logs are pushed to cloud storage for investigation. Old resources are then destroyed using Terraform to reduce costs.
