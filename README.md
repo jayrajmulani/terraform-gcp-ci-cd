@@ -50,9 +50,6 @@ The problem with not having an automated deployment pipeline when a release is c
 1. Monitoring and alerting mechanisms are active, continuously collecting data and promptly notifying the team in case of any issues or anomalies.
 
 #### Subflows
-Rollback Mechanism (Alternative Flow):
-- If issues are detected during deployment or integration testing, the pipeline can initiate an automated rollback to the last stable version of the application.
-
 Manual Intervention (Alternative Flow):
 - In case of exceptional circumstances or issues not addressed by the pipeline, the team may need to perform manual interventions or configurations to resolve the problem.
 
