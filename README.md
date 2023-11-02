@@ -19,7 +19,7 @@ Our pipeline provisions and configures necessary cloud resources, triggers docke
 1. Terraform allows us to define and manage infrastructure as code, ensuring consistent and repeatable infrastructure provisioning. This eliminates discrepancies between development and production environments.
 2. It automates the provisioning and configuration of infrastructure, reducing manual deployment processes, mitigating human errors, and accelerating deployment times.
 3. We integrate terraform with testing frameworks to validate infrastructure configurations, reducing the risk of deploying defective infrastructure.
-4. We can also trigger the deployment pipeline in response to monitoring events to scale up / down resources to adjust the load and re-provision resources in case of server crashes.
+4. We can also trigger the deployment pipeline in response to monitoring events to scale up / down resources, to adjust the load and re-provision resources in case of server crashes.
 
 Apart from these, human intervention may be required for the following:
 
@@ -27,32 +27,29 @@ Apart from these, human intervention may be required for the following:
    - Setup of GitHub Action Runner, Terraform, and Ansible.
    - Creating and approving pull requests to trigger the pipeline.
    - Creating necessary branches (dev, release, and main).
-   - Creating Release
 2. Manual intervention in response to events:
    - Terraform script provisioning failures.
    - Monitoring service alerts with automated resource provisioning failure.
 
 ## Use Case
 
-Use Case: Merge to `main` branch triggers the production deployment workflow
+### Use Case: Merge to `main` branch triggers the production deployment workflow
 
-Problem:
+#### Problem
 The problem with not having an automated deployment pipeline when a release is created is that it introduces a higher likelihood of human error, slows down the deployment process, leads to potential inconsistencies between environments, hinders reproducibility of deployments, and limits scalability. Manual deployments are more time-consuming, less reliable, and can result in mistakes such as deploying the wrong version or missing critical configuration steps. This can ultimately erode confidence in the release process, particularly in high-stakes environments like production. Automated pipelines, on the other hand, offer consistency, reliability, and efficiency, providing a smoother and more reliable path to deploying releases in a controlled and predictable manner.
 
-Preconditions:
+#### Preconditions
 - A DevOps pipeline is set up with Terraform for infrastructure provisioning.
 - The main branch is designated as the target for the production deployment.
 - The development team and DevOps personnel have access to the necessary tools and permissions to merge code to the main branch and trigger the deployment workflow.
 
-Main Flow:
-
+#### Main Flow
 1. A release engineer creates and prepares a new `release` branch from the `dev` branch. Then, the release engineer initiates a pull request, requesting that their changes be merged into the main branch. Code reviews, automated tests, and validations are performed as part of the PR process. In case, of errors, new code is committed on the release branch which runs the pipeline again.
 1. Once the code review is approved and all tests pass, the PR is approved for merging. The release engineer merges the changes into the `main` branch. The merge to the `main` branch triggers an automatic deployment workflow within the DevOps pipeline.
 1. The pipeline uses Terraform to provision or update the required infrastructure components on the cloud platform, such as servers, databases, and networking. Then the pipeline automatically deploys the application code to the provisioned infrastructure.
 1. Monitoring and alerting mechanisms are active, continuously collecting data and promptly notifying the team in case of any issues or anomalies.
 
-Subflows:
-
+#### Subflows
 Rollback Mechanism (Alternative Flow):
 - If issues are detected during deployment or integration testing, the pipeline can initiate an automated rollback to the last stable version of the application.
 
@@ -66,3 +63,30 @@ This use case describes how merging code into the main branch triggers the deplo
 
 
 ## Pipeline Design
+
+### Gitflow
+
+
+An `upstream` branch on our repository stays in sync with the remote `main` branch of the course's coffee-project. Other custom features can be developed on `feature` branches on our repository. Changes on both these branches then get merged to the `dev` branch. Once all the development changes are ready for release, changes are pushed to the `release` branch where the changes can be tested and verified in a pre-release environment. Once these changes are tested and verified, changes are pushed to the `main` branch which build and deploys the website on production.
+
+### Deployment Pipelines
+
+For deployment, we run 3 different pipelines via Github Action to serve 3 main purpose. Based on the gitflow above we have 3 critical branches: `dev`, `release` and `main`
+
+1. Branch Protection 
+
+
+On Pull request created or reopened that targets either the `dev`, `release` or `main` branches, a github action pipeline will run which will run linting using ESLint and tests using Mocha. The pull requests will be allowed to merge only after these tasks pass successfully. This pipeline maintains sanity of the codebase and protects the branches by restricting introduction of certain errors.
+
+2. Pre-release Deployment
+
+The purpose of this pipeline is to create a pre-release environment, build, deploy and verify the release just before launching it to production. This allows to verify if the changes are stable in an environment which closely resembles production. 
+Whenever a pull request is merged to `release` branch, the pre-release pipeline is triggered. 
+
+
+
+3. Production Deployment
+
+
+
+
