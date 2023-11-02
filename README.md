@@ -120,5 +120,5 @@ If this health-check fails, an alert is sent to the communication channels for t
 - Configure resources using Ansible: Once the resources are available, Ansible is used to configure dependencies on the createed resource.
 - Run deployment: Finally, the latest docker image is pulled on the resources created and runs the docker container which serves the wesbite on the specified port. 
 - Migrate traffic to new resources: The loadbalancer is then configured to route traffic from the old resources to the new resources that are setup in the previous step
-- Deployment pipeline succeeded: The deployment pipeline is considered succeded and this triggers the health-check again
+- Deployment pipeline succeeded: The deployment pipeline is considered succeded and this triggers the health-check again. This step has a maximum amount of retry to ensure that if the health-check fails repeatedly, the deployment is not marked as succeeded and thus ends the automatic loop.
 - Clean up old resources using Terraform: In this step server and application logs are pushed to cloud storage for investigation. Old resources are then destroyed using Terraform to reduce costs.
