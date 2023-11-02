@@ -6,9 +6,6 @@
 - Jayraj Mulani (_jmulani2_)
 - Mitanshu Reshamwala (_mresham_)
 
-### Fork Repo Link:
-https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project
-
 ## Problem Statement and Description
 
 ### _From Chaos to Control: Terraforming a New DevOps Era_
@@ -68,25 +65,27 @@ This use case describes how merging code into the main branch triggers the deplo
 
 <img src="images/gitflow.png" style="width: 70%"/>
 
-An `upstream` branch on our repository stays in sync with the remote `main` branch of the course's coffee-project. Other custom features can be developed on `feature` branches on our repository. Changes on both these branches then get merged to the `dev` branch. Once all the development changes are ready for release, changes are pushed to the `release` branch where the changes can be tested and verified in a pre-release environment. Once these changes are tested and verified, changes are pushed to the `main` branch which build and deploys the website on production.
+The `upstream` branch on our repository stays in sync with the remote `main` branch of the course's coffee-project. This happens manually. Other custom features can be developed on `feature` branches on our repository. Changes on both these branches may be merged to the `dev` branch through pull requests. Once all the development changes are ready for release, a PR is created to the `release` branch where they can be tested and verified in a pre-release environment. Once these changes are tested and verified, changes are pushed to the `main` branch which build and deploys the code on production.
 
 ### Deployment Pipelines
 
-<img src="images/deploy.png" style="width: 70%"/>
+The deployment consists of 4 different pipelines run via Github Action to serve 4 main purposes. Based on the gitflow above we have 3 critical branches: `dev`, `release` and `main`
 
-For deployment, we run 4 different pipelines via Github Action to serve 4 main purpose. Based on the gitflow above we have 3 critical branches: `dev`, `release` and `main`
+#### Branch Protection 
 
-1. Branch Protection 
+<img src="images/deploy_1.png" style="width: 70%"/>
 
-This pipeline maintains sanity of the codebase and protects the branches by restricting introduction of certain errors. 
+In addition to the defined branch protection rules, this pipeline maintains sanity of the codebase and protects the branches by restricting introduction of certain errors. 
 
-On Pull request created or reopened that targets either the `dev`, `release` or `main` branches, a github action pipeline will run which will run linting using ESLint and tests using Mocha. The pull requests will be allowed to merge only after these tasks pass successfully. 
+Whenever a PR created or reopened that targets either the `dev`, `release` or `main` branches, a github action will be triggered to lint and test the code using ESLint and Mocha Test Suite respectively. PRs can be merged only after these tasks pass successfully. 
 
-2. Pre-release Deployment
+#### Pre-release Deployment
 
-The primary objective of this pipeline is to establish a pre-release environment, where it builds, deploys, and verifies the release just prior to its production launch. This process enables us to confirm the stability of the changes in an environment closely mirroring the production environment.
+<img src="images/deploy_2.png" style="width: 70%"/>
 
-Whenever a pull request is merged to `release` branch, the pre-release pipeline is triggered. 
+The primary objective of this pipeline is to establish a pre-release environment, where it builds, deploys, and verifies the release before it is deployed on production. This process enables us to verify the stability of the changes in an environment that mirrors the production environment.
+
+Whenever a pull request is merged to `release` branch, the pre-release pipeline is triggered and below actions are performed:
 - Run ESLint: The linting tool ESLint is used to run linting on the changed files.
 - Run Tests using Mocha: The testing tool Mocha is used to run tests.
 - Build Docker: A Docker image is built with a pre-release tag.
@@ -96,7 +95,9 @@ Whenever a pull request is merged to `release` branch, the pre-release pipeline 
 - Run deployment: Finally, the docker image is pulled on the resources created and runs the docker container which serves the wesbite on the specified port. 
 
 
-3. Production Deployment
+#### Production Deployment
+
+<img src="images/deploy_3.png" style="width: 70%"/>
 
 This pipeline is used for production deployment. 
 
@@ -110,11 +111,11 @@ Whenever a pull request is merged to `main` branch, the production pipeline is t
 - Configure resources using Ansible: Once the resources are available, Ansible is used to configure dependencies on the createed resource. Ansible is also idempotent and hence if there is no change in configuration this step performs no operations. 
 - Run deployment: Finally, the docker image is pulled on the resources created and runs the docker container which serves the wesbite on the specified port. 
 
-4. Monitoring Health [Stretch Goal]
+#### Health Monitoring [Stretch Goal]
 
 <img src="images/monitor.png" style="width: 70%"/>
 
-This pipeline is used to periodically monitor the resources and the website. If the website is unreachable for the end user, new resources are created and latest version is deployed automatically to reduce manual intervention and keep downtime to the very minimum.
+This pipeline is used to periodically monitor the resources and the app. If the app is unreachable for the end user, new resources are created and latest version is deployed automatically to reduce manual intervention and keep downtime to the very minimum.
 
 Whenever a production deployment pipeline is succedded, a health-check cron job is started which runs every minute. 
 
