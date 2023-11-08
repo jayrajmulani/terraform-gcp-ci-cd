@@ -18,13 +18,17 @@ jobs:
           node-version: 21
           
       - name: Install Node.js dependencies
-        run: cd coffee-project && npm ci
+        working-directory: ./coffee-project
+        run: npm ci
 
       - name: Run ESLint
+        working-directory: ./coffee-project
         run: npx eslint .
 
       - name: Run Prettier
+        working-directory: ./coffee-project
         run: npx prettier . --check
         
       - name: Run tests
+        working-directory: ./coffee-project
         run: npm test
