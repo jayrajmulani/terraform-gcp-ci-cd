@@ -34,24 +34,13 @@ resource "google_compute_instance" "coffee_compute_resource" {
   tags = ["coffee-project"]
 }
 
-resource "google_compute_firewall" "http" {
-  name        = "allow-http"
+resource "google_compute_firewall" "coffee_firewall" {
+  name        = "allow-http-https"
   target_tags = ["coffee-project"]
   network     = "default"
   allow {
     protocol = "tcp"
-    ports    = ["80"]
-  }
-  source_ranges = ["0.0.0.0/0"]
-}
-
-resource "google_compute_firewall" "https" {
-  name        = "allow-https"
-  target_tags = ["coffee-project"]
-  network     = "default"
-  allow {
-    protocol = "tcp"
-    ports    = ["443"]
+    ports    = ["80", "443"]
   }
   source_ranges = ["0.0.0.0/0"]
 }
