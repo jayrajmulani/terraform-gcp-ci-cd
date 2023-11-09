@@ -3,7 +3,7 @@ output "instance_name" {
 }
 
 output "instance_ip" {
-  description = "This is the external IP of the newly created instance"
+  description = "This is the internal IP of the newly created instance"
   value       = google_compute_instance.coffee_compute_resource.network_interface[0].network_ip
 }
 
