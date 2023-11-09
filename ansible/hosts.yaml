@@ -1,0 +1,2 @@
+[webservers]
+34.75.103.200 ansible_user=mdani
