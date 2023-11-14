@@ -10,6 +10,9 @@ on:
       - dev
       - release*
 
+env:
+  WORKSPACE: dev
+
 jobs:
   terraform-plan:
     name: Terraform Plan
@@ -25,9 +28,7 @@ jobs:
 
       - name: Create Workspaces
         run: |
-          terraform workspace new dev
-          terraform workspace new release
-          terraform workspace new prod
+          terraform workspace select $WORKSPACE || terraform workspace new $WORKSPACE
         working-directory: ./terraform-files
 
       - name: Select dev workspace and create plan
