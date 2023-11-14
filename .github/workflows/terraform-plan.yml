@@ -1,12 +1,14 @@
 name: Terraform Provisioning - Plan
 
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
+  push:
     branches:
+      - main
+  pull_request:
+    branches:
+      - main
       - dev
+      - release*
 
 jobs:
   terraform-plan:
