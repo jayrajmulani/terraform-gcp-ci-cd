@@ -41,6 +41,7 @@ jobs:
         run: terraform apply -auto-approve -input=false
         working-directory: ./terraform-files
 
-      # FIXME: To be deleted/commented before merging to dev
-      # - name: Destroy resources
-      #   run: terraform destroy -auto-approve -input=false
+      # FIXME: To be deleted/commented before merging to dev, auto destroying resources for now
+      - name: Destroy resources
+        run: terraform destroy -auto-approve -input=false
+        working-directory: ./terraform-files
