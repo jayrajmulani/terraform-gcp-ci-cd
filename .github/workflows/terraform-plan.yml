@@ -28,7 +28,7 @@ jobs:
 
       - name: Create Workspaces
         run: |
-          terraform workspace select $WORKSPACE -or-create=true
+          terraform workspace select -or-create $WORKSPACE
         working-directory: ./terraform-files
 
       - name: Select dev workspace and create plan
