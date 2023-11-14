@@ -39,6 +39,7 @@ jobs:
         # FIXME: Uncomment below code to perform apply action only on push to the dev branch
         # if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
+        working-directory: ./terraform-files
 
       # FIXME: To be deleted/commented before merging to dev
       # - name: Destroy resources
