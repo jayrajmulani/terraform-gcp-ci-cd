@@ -1,4 +1,4 @@
-name: Terraform Provisioning - Plan
+name: Terraform Provisioning Workflow
 
 on:
   push:
@@ -15,8 +15,8 @@ env:
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
 jobs:
-  terraform-plan:
-    name: Terraform Plan
+  terraform-provisioning:
+    name: Creating resources using terraform
     runs-on: self-hosted
 
     steps:
@@ -36,12 +36,12 @@ jobs:
         working-directory: ./terraform-files
 
       - name: Create resources
-        # FIXME: Uncomment below code to perform apply action only on push to the dev branch
-        # if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+        # Comment below line while testing workflow
+        if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
         working-directory: ./terraform-files
 
-      # FIXME: To be deleted/commented before merging to dev, auto destroying resources for now
-      - name: Destroy resources
-        run: terraform destroy -auto-approve -input=false
-        working-directory: ./terraform-files
+      # Uncomment below step while testing workflow
+      # - name: Destroy resources
+      #   run: terraform destroy -auto-approve -input=false
+      #   working-directory: ./terraform-files
