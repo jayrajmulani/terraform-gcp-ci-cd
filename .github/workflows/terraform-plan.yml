@@ -12,6 +12,7 @@ on:
 
 env:
   WORKSPACE: dev
+  GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
 jobs:
   terraform-plan:
