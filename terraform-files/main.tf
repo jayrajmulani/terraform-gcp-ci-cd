@@ -18,7 +18,7 @@ provider "google" {
 }
 
 resource "google_compute_instance" "coffee_compute_resource" {
-  name         = "coffee-server"
+  name         = "coffee-server-${terraform.workspace}"
   machine_type = var.machine_type
   zone         = var.zone
   boot_disk {
@@ -35,7 +35,7 @@ resource "google_compute_instance" "coffee_compute_resource" {
 }
 
 resource "google_compute_firewall" "coffee_firewall" {
-  name        = "allow-http-https"
+  name        = "allow-http-https-${terraform.workspace}"
   target_tags = ["coffee-project"]
   network     = "default"
   allow {
