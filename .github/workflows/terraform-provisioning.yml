@@ -13,7 +13,7 @@ on:
 env:
   WORKSPACE: dev
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-  KEY_FILE: ~/ssh/id_rsa
+  KEY_FILE: ~/.ssh/id_rsa
 
 jobs:
   terraform-provisioning:
@@ -24,10 +24,21 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v3
 
-      - name: Configure SSH Keys
+      # - name: Configure SSH Keys
+      #   run: |
+      #     mkdir -p ~/ssh
+      #     ssh-keygen -t rsa -f $KEY_FILE -N "" -C jmulani2 <<< y
+
+      - name: Generate SSH Key
         run: |
-          mkdir -p ~/ssh
-          ssh-keygen -t rsa -f $KEY_FILE -N "" -C jmulani2 <<< y
+          ssh-keygen -t rsa -b 4096 -C "jmulani2" -f id_rsa -N '' <<< y
+
+      - name: Save SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          mv id_rsa ~/.ssh/
+          mv id_rsa.pub ~/.ssh/
+          chmod 600 ~/.ssh/id_rsa
 
       - name: Initialize
         run: terraform init
