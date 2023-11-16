@@ -66,7 +66,7 @@ jobs:
       - name: Trigger Ansible playbook
         run: |
           external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}
-          echo ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa -e 'ansible_user=mresham' deployment.yaml 
+          ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa deployment.yaml 
         working-directory: ./ansible
 
       # Uncomment below step while testing workflow
