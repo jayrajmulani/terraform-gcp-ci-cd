@@ -13,7 +13,7 @@ on:
 env:
   WORKSPACE: dev
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-  KEY_FILE: /home/jmulani2/.ssh/id_rsa
+  KEY_FILE: ~/ssh/id_rsa
 
 jobs:
   terraform-provisioning:
@@ -25,7 +25,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Configure SSH Keys
-        run: ssh-keygen -t rsa -f $KEY_FILE -N "" -C jmulani2 <<< y
+        run: |
+          mkdir -p ~/ssh
+          ssh-keygen -t rsa -f $KEY_FILE -N "" -C jmulani2 <<< y
 
       - name: Initialize
         run: terraform init
