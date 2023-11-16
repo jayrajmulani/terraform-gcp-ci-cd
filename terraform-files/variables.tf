@@ -32,11 +32,11 @@ variable "image" {
 variable "public_key" {
   type        = string
   description = "Key path"
-  default     = "/home/jmulani2/keys/id_rsa.pub"
+  default     = "/home/mdani/keys/id_rsa.pub"
 }
 
 variable "private_key" {
   type        = string
   description = "Key path"
-  default     = "/home/jmulani2/keys/id_rsa"
+  default     = "/home/mdani/keys/id_rsa"
 }
