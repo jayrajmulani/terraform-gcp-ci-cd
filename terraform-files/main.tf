@@ -32,13 +32,7 @@ resource "google_compute_instance" "coffee_compute_resource" {
   }
 
   metadata = {
-    ssh-keys = "mdani:${file(var.public_key)}"
-  }
-
-  connection {
-    type        = "ssh"
-    user        = "mdani"
-    private_key = file(var.private_key)
+    ssh-keys = "mresham:${file(var.public_key)}"
   }
 
   tags = ["coffee-project"]

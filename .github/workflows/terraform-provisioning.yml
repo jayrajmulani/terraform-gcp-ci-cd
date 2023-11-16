@@ -13,7 +13,6 @@ on:
 env:
   WORKSPACE: dev
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-  KEY_FILE: /home/mdani/keys/id_rsa
 
 jobs:
   terraform-provisioning:
@@ -26,11 +25,7 @@ jobs:
 
       - name: Setup fresh SSH keys
         run: |
-          ssh-keygen -t rsa -b 4096 -C "mdani" -f id_rsa -N '' <<< y
-          mkdir -p /home/mdani/keys
-          mv id_rsa /home/mdani/keys/
-          mv id_rsa.pub /home/mdani/keys/
-          chmod 600 /home/mdani/keys/id_rsa
+          ssh-keygen -t rsa -b 4096 -C "mresham" -f ~/.ssh/id_rsa -N '' <<< y
 
       - name: Initialize
         run: terraform init
@@ -71,7 +66,7 @@ jobs:
       - name: Trigger Ansible playbook
         run: |
           external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}
-          ansible-playbook -i "${external_ip}," --private-key=$KEY_FILE -e 'ansible_user=mdani' deployment.yaml 
+          ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa -e 'ansible_user=mresham' deployment.yaml 
         working-directory: ./ansible
 
       # Uncomment below step while testing workflow
