@@ -68,5 +68,5 @@ jobs:
         # if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
         run: |
           external_ip=$(terraform output -raw external_ip) 
-          ansible-playbook -i ${external_ip} --private-key $KEY_FILE -u jmulani2 deployment.yaml
-        working-directory: ./ansible
+          ansible-playbook -i "${external_ip}," ../ansible/deployment.yaml --private-key $KEY_FILE -u jmulani2
+        working-directory: ./terraform-files
