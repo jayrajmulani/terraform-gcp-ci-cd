@@ -67,6 +67,6 @@ jobs:
         # Comment below line while testing workflow
         # if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
         run: |
-          external_ip=$(terraform output -raw external_ip) 
-          ansible-playbook -i "${external_ip}," ../ansible/deployment.yaml --private-key $KEY_FILE -u jmulani2
+          external_ip=$(terraform output -raw external_ip)
+          ansible-playbook -i "${external_ip}," ../ansible/deployment.yaml --private-key $KEY_FILE
         working-directory: ./terraform-files
