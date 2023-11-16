@@ -11,7 +11,7 @@ on:
       - release*
 
 env:
-  WORKSPACE: dev
+  WORKSPACE: ${{github.ref_name}}
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
 jobs:
@@ -37,11 +37,14 @@ jobs:
 
       - name: Create resources
         # Comment below line while testing workflow
-        if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false
+#         if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+        run: |
+          #if [[ "${{github.base_ref}}" == "main" || "${{github.base_ref}}" == "dev" || "${{github.ref}}" == "refs/heads/main" ]]; then
+          terraform apply -auto-approve -input=false
+          #fi
         working-directory: ./terraform-files
 
       # Uncomment below step while testing workflow
-      # - name: Destroy resources
-      #   run: terraform destroy -auto-approve -input=false
-      #   working-directory: ./terraform-files
+      - name: Destroy resources
+        run: terraform destroy -auto-approve -input=false
+        working-directory: ./terraform-files
