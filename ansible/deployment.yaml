@@ -1,9 +1,9 @@
 ---
 - name: Deploy App
-  hosts: webservers
+  hosts: all
   become: yes
   become_method: sudo
   tasks:
     - name: Include webserver task list
       ansible.builtin.import_tasks:
-          file: webserver.yaml
+        file: webserver.yaml

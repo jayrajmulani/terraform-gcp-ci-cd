@@ -31,6 +31,16 @@ resource "google_compute_instance" "coffee_compute_resource" {
     access_config {}
   }
 
+  metadata = {
+    ssh-keys = "jmulani2:${file(var.public_key)}"
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "jmulani2"
+    private_key = file(var.private_key)
+  }
+
   tags = ["coffee-project"]
 }
 
@@ -40,7 +50,7 @@ resource "google_compute_firewall" "coffee_firewall" {
   network     = "default"
   allow {
     protocol = "tcp"
-    ports    = ["80", "443"]
+    ports    = ["80", "443", "22"]
   }
   source_ranges = ["0.0.0.0/0"]
 }
