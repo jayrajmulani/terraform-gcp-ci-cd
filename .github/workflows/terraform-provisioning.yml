@@ -24,17 +24,9 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v3
 
-      # - name: Configure SSH Keys
-      #   run: |
-      #     mkdir -p ~/ssh
-      #     ssh-keygen -t rsa -f $KEY_FILE -N "" -C jmulani2 <<< y
-
-      - name: Generate SSH Key
+      - name: Setup fresh SSH keys
         run: |
           ssh-keygen -t rsa -b 4096 -C "jmulani2" -f id_rsa -N '' <<< y
-
-      - name: Save SSH Key
-        run: |
           mkdir -p /home/jmulani2/keys
           mv id_rsa /home/jmulani2/keys/
           mv id_rsa.pub /home/jmulani2/keys/
@@ -68,5 +60,11 @@ jobs:
         # if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
         run: |
           external_ip=$(terraform output -raw external_ip)
+          echo $external_ip
           ansible-playbook -i "${external_ip}," ../ansible/deployment.yaml --private-key $KEY_FILE
+        working-directory: ./terraform-files
+
+      # Uncomment below step while testing workflow
+      - name: Destroy resources
+        run: terraform destroy -auto-approve -input=false
         working-directory: ./terraform-files
