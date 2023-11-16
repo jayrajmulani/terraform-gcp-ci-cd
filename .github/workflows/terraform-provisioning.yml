@@ -17,7 +17,7 @@ env:
 
 jobs:
   terraform-provisioning:
-    name: Creating resources using terraform
+    name: Create resources using terraform
     runs-on: self-hosted
 
     steps:
@@ -60,7 +60,7 @@ jobs:
       external_ip: ${{ steps.external_ip.outputs.external_ip }}
 
   ansible-configuration:
-    name: Configure newly created server using ansible
+    name: Configure server using ansible
     runs-on: self-hosted
     needs: terraform-provisioning
 
@@ -71,7 +71,7 @@ jobs:
       - name: Trigger Ansible playbook
         run: |
           external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}
-          ansible-playbook -i "${external_ip}," deployment.yaml --private-key $KEY_FILE
+          ansible-playbook -i "${external_ip}," deployment.yaml --private-key=$KEY_FILE
         working-directory: ./ansible
 
       # Uncomment below step while testing workflow
