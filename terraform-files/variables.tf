@@ -32,11 +32,11 @@ variable "image" {
 variable "public_key" {
   type        = string
   description = "Key path"
-  default     = "~/.ssh/id_rsa.pub"
+  default     = "/home/jmulani2/.ssh/id_rsa.pub"
 }
 
 variable "private_key" {
   type        = string
   description = "Key path"
-  default     = "~/.ssh/id_rsa"
+  default     = "/home/jmulani2/.ssh/id_rsa"
 }
