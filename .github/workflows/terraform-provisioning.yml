@@ -50,21 +50,45 @@ jobs:
         run: terraform apply -auto-approve -input=false
         working-directory: ./terraform-files
 
+      - name: Output External IP
+        id: external_ip
+        run: |
+          echo "::set-output name=external_ip::$(terraform output -raw external_ip)"
+        working-directory: ./terraform-files
+
+    outputs:
+      external_ip: ${{ steps.external_ip.outputs.external_ip }}
+
+  ansible-configuration:
+    name: Configure newly created server using ansible
+    runs-on: self-hosted
+    needs: terraform-provisioning
+
+    steps:
+      - name: Checkout Git repository
+        uses: actions/checkout@v3
+
+      - name: Trigger Ansible playbook
+        run: |
+          external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}
+          ansible-playbook -i "${external_ip}," deployment.yaml --private-key $KEY_FILE
+        working-directory: ./ansible
+
       # Uncomment below step while testing workflow
       # - name: Destroy resources
       #   run: terraform destroy -auto-approve -input=false
       #   working-directory: ./terraform-files
 
-      - name: Trigger Ansible playbook
-        # Comment below line while testing workflow
-        # if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
-        run: |
-          external_ip=$(terraform output -raw external_ip)
-          echo $external_ip
-          ansible-playbook -i "${external_ip}," ../ansible/deployment.yaml --private-key $KEY_FILE
-        working-directory: ./terraform-files
+      # - name: Trigger Ansible playbook
+      #   # Comment below line while testing workflow
+      #   # if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+      #   run: |
+      #     external_ip=$(terraform output -raw external_ip)
+      #     echo $external_ip
+      #     ansible-playbook -i "${external_ip}," ../ansible/deployment.yaml --private-key $KEY_FILE
+      #   working-directory: ./terraform-files
 
       # Uncomment below step while testing workflow
-      - name: Destroy resources
-        run: terraform destroy -auto-approve -input=false
-        working-directory: ./terraform-files
+      # - name: Destroy resources
+      #   run: terraform destroy -auto-approve -input=false
+      #   working-directory: ./terraform-files
