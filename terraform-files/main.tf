@@ -18,9 +18,10 @@ provider "google" {
 }
 
 resource "google_compute_instance" "coffee_compute_resource" {
-  name         = "coffee-server-${terraform.workspace}"
-  machine_type = var.machine_type
-  zone         = var.zone
+  name           = "coffee-server-${terraform.workspace}"
+  machine_type   = var.machine_type
+  zone           = var.zone
+  desired_status = "RUNNING"
   boot_disk {
     initialize_params {
       image = var.image
