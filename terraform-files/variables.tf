@@ -28,3 +28,10 @@ variable "image" {
   description = "Instance image"
   default     = "debian-11-bullseye-v20231010"
 }
+
+variable "public_key" {
+  type        = string
+  description = "Key path"
+  default     = "~/.ssh/id_rsa.pub"
+}
+

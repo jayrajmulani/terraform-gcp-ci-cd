@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
       - dev
       - release*
 
@@ -16,12 +13,16 @@ env:
 
 jobs:
   terraform-provisioning:
-    name: Creating resources using terraform
+    name: Create resources using terraform
     runs-on: self-hosted
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
+
+      - name: Setup fresh SSH keys
+        run: |
+          ssh-keygen -t rsa -b 4096 -C "mresham" -f ~/.ssh/id_rsa -N '' <<< y
 
       - name: Initialize
         run: terraform init
@@ -36,12 +37,37 @@ jobs:
         working-directory: ./terraform-files
 
       - name: Create resources
-        # Comment below line while testing workflow
-        #if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
         working-directory: ./terraform-files
 
-      # Uncomment below step while testing workflow
+      - name: Output External IP
+        id: external_ip
+        run: |
+          echo "::set-output name=external_ip::$(terraform output -raw external_ip)"
+        working-directory: ./terraform-files
+
+    outputs:
+      external_ip: ${{ steps.external_ip.outputs.external_ip }}
+
+  ansible-configuration:
+    name: Configure server using ansible
+    runs-on: self-hosted
+    needs: terraform-provisioning
+
+    steps:
+      - name: Checkout Git repository
+        uses: actions/checkout@v3
+
+      # FIXME: Uncomment before merging #23
+      # - name: Trigger Ansible playbook
+      #   run: |
+      #     external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}
+      #     ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa deployment.yaml
+      #   working-directory: ./ansible
+
+      # Comment below step to disable resource destroy when #23 is able to successfully deploy the app
       - name: Destroy resources
-        run: terraform destroy -auto-approve -input=false
+        run: |
+          terraform init
+          terraform destroy -auto-approve -input=false
         working-directory: ./terraform-files
