@@ -1,0 +1,47 @@
+name: Terraform Provisioning Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - dev
+      - release*
+
+env:
+  WORKSPACE: ${{github.ref_name}}
+  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+jobs:
+  terraform-provisioning:
+    name: Creating resources using terraform
+    runs-on: self-hosted
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Initialize
+        run: terraform init
+        working-directory: ./terraform-files
+
+      - name: Create Workspace
+        run: terraform workspace select -or-create=true $WORKSPACE
+        working-directory: ./terraform-files
+
+      - name: Create plan
+        run: terraform plan -input=false
+        working-directory: ./terraform-files
+
+      - name: Create resources
+        # Comment below line while testing workflow
+        #if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
+        working-directory: ./terraform-files
+
+      # Uncomment below step while testing workflow
+      - name: Destroy resources
+        run: terraform destroy -auto-approve -input=false
+        working-directory: ./terraform-files
