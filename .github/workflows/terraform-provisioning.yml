@@ -72,5 +72,7 @@ jobs:
 
       # Comment below step to disable resource destroy
       - name: Destroy resources
-        run: terraform destroy -auto-approve -input=false
+        run: |
+          terraform init
+          terraform destroy -auto-approve -input=false
         working-directory: ./terraform-files
