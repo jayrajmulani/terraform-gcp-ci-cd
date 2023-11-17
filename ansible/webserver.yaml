@@ -19,14 +19,12 @@
   apt_repository:
     repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
     state: present
-    update_cache: yes
 
 - name: Install docker
   apt:
     name: 
       - docker-ce
     state: present
-    update_cache: yes
 
 - name: Run docker
   service:
@@ -42,15 +40,15 @@
 
 - name: Copy app files
   copy:
-    src: /home/ansible-control/coffee-project/
-    dest: /home/mdani/coffee-project
+    src: /home/mresham/coffee-project/
+    dest: /home/mresham/coffee-project
 
 - name: Copy docker files
   copy:
-    src: /home/ansible-control/docker/
-    dest: /home/mdani/docker
+    src: /home/mresham/docker/
+    dest: /home/mresham/docker
 
 - name: Start Webserver docker
   community.docker.docker_compose:
-    project_src: /home/mdani/docker
+    project_src: /home/mresham/docker
     state: present
