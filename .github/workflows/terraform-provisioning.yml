@@ -2,13 +2,14 @@ name: Terraform Provisioning Workflow
 
 on:
   push:
-    branches:
-      - main
-      - dev
-      - release*
+#     branches:
+#       - main
+#       - dev
+#       - release*
 
 env:
-  WORKSPACE: ${{github.ref_name}}
+  WORKSPACE: ${{github.base_ref}}
+#   WORKSPACE: ${{github.ref_name}}
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
 jobs:
@@ -69,5 +70,6 @@ jobs:
       - name: Destroy resources
         run: |
           terraform init
+          terraform workspace select -or-create=true $WORKSPACE
           terraform destroy -auto-approve -input=false
         working-directory: ./terraform-files
