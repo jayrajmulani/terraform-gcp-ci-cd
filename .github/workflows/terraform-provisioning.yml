@@ -8,7 +8,7 @@ on:
       - release*
 
 env:
-  WORKSPACE: dev
+  WORKSPACE: ${{github.ref_name}}
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
 jobs:
@@ -65,7 +65,7 @@ jobs:
       #     ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa deployment.yaml
       #   working-directory: ./ansible
 
-      # Comment below step to disable resource destroy
+      # Comment below step to disable resource destroy when #23 is able to successfully deploy the app
       - name: Destroy resources
         run: |
           terraform init
