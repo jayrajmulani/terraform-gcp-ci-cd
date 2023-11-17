@@ -68,9 +68,9 @@ jobs:
           env ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham
 
       # Comment below step to disable resource destroy when #23 is able to successfully deploy the app
-      - name: Destroy resources
+      - name: Stop resources
         run: |
           terraform init
           terraform workspace select $WORKSPACE
-          terraform destroy -auto-approve -input=false
+          terraform apply -auto-approve -input=false -var="instance_desired_status=TERMINATED"
         working-directory: ./terraform-files
