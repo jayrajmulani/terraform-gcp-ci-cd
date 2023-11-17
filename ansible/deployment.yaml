@@ -7,3 +7,13 @@
     - name: Include webserver task list
       ansible.builtin.import_tasks:
         file: webserver.yaml
+    - name: Include Nginx configuration
+      ansible.builtin.import_tasks:
+        file: nginx.yaml
+    
+    
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
