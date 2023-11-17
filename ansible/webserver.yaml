@@ -40,12 +40,12 @@
 
 - name: Copy app files
   copy:
-    src: /home/mresham/coffee-project/
+    src: ./coffee-project/
     dest: /home/mresham/coffee-project
 
 - name: Copy docker files
   copy:
-    src: /home/mresham/docker/
+    src: ./docker/
     dest: /home/mresham/docker
 
 - name: Start Webserver docker
