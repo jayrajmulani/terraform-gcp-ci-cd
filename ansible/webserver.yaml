@@ -54,9 +54,9 @@
     state: present
     
 - name: Wait for 200s for node server to load on port 3000
-    wait_for:
-      port: 3000                                    # Check for port 3000
-      delay: 3                                      # check only after 3s
-      timeout: 200                                  # Only wait for 200s. Default is 300
-      msg: "HTTP Timeout on port 3000. No response" # Show custom message on failure
-    register: port_check
+  wait_for:
+    port: 3000                                    # Check for port 3000
+    delay: 3                                      # check only after 3s
+    timeout: 200                                  # Only wait for 200s. Default is 300
+    msg: "HTTP Timeout on port 3000. No response" # Show custom message on failure
+  register: port_check
