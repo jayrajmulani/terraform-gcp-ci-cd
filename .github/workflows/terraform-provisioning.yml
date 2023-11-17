@@ -69,5 +69,6 @@ jobs:
       - name: Destroy resources
         run: |
           terraform init
+          terraform workspace select $WORKSPACE
           terraform destroy -auto-approve -input=false
         working-directory: ./terraform-files
