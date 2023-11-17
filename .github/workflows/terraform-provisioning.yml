@@ -1,14 +1,14 @@
 name: Terraform Provisioning Workflow
 
 on:
-  push:
+  push
 #     branches:
 #       - main
 #       - dev
 #       - release*
 
 env:
-  WORKSPACE: ${{github.base_ref}}
+  WORKSPACE: 29-terraform-destroy
 #   WORKSPACE: ${{github.ref_name}}
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
