@@ -43,7 +43,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           push: true
-          tags: $WORKSPACE
+          tags: ${{ secrets.DOCKER_USERNAME }}/coffee-project:$WORKSPACE
           labels: ${{ steps.meta.outputs.labels }}
   
   terraform-provisioning:
