@@ -128,3 +128,9 @@ If this health-check fails, an alert is sent to the communication channels for t
 - Migrate traffic to new resources: The loadbalancer is then configured to route traffic from the old resources to the new resources that are setup in the previous step
 - Deployment pipeline succeeded: The deployment pipeline is considered succeded and this triggers the health-check again. This step has a maximum amount of retry to ensure that if the health-check fails repeatedly, the deployment is not marked as succeeded and thus ends the automatic loop.
 - Clean up old resources using Terraform: In this step server and application logs are pushed to cloud storage for investigation. Old resources are then destroyed using Terraform to reduce costs.
+
+
+## Additional Scope added after Feedback 1
+- Enable security check using snyk (#24) - Eligible for bonus points
+- Enable rate limiting to prevent DoS / DDoS attacks (#36) - Eligible for bonus points
+- Setup Prometheus logging and monitoring / visualization using Grafana (#25)
