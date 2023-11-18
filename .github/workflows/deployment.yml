@@ -43,12 +43,13 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: $WORKSPACE
           labels: ${{ steps.meta.outputs.labels }}
   
   terraform-provisioning:
     name: Create resources using terraform
     runs-on: self-hosted
+    needs: docker-build
 
     steps:
       - name: Check out Git repository
