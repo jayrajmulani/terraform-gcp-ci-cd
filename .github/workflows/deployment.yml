@@ -6,11 +6,6 @@ on:
       - main
       - dev
       - release*
-  pull_request:
-    branches:
-      - main
-      - dev
-      - release*
 
 env:
   WORKSPACE: ${{github.ref_name}}
@@ -43,7 +38,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/coffee-project:dev
+          tags: ${{ secrets.DOCKER_USERNAME }}/coffee-project:${{ github.ref_name }}
           labels: ${{ steps.meta.outputs.labels }}
   
   terraform-provisioning:
