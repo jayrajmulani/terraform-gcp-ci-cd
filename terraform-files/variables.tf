@@ -35,3 +35,8 @@ variable "public_key" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
+variable "instance_desired_status" {
+  type        = string
+  description = "This is the desired state of the VM instance"
+  default     = "RUNNING"
+}
