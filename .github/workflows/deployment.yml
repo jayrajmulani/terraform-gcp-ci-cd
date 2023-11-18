@@ -6,6 +6,13 @@ on:
       - main
       - dev
       - release*
+  
+  #TODO: remove after testing
+  pull_request:
+    branches:
+      - main
+      - dev
+      - release*
 
 env:
   WORKSPACE: ${{github.ref_name}}
