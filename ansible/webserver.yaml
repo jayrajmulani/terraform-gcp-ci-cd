@@ -38,16 +38,6 @@
       - docker 
       - docker-compose
 
-# - name: Copy app files
-#   copy:
-#     src: ../coffee-project/
-#     dest: /home/mresham/coffee-project
-
-# - name: Copy docker files
-#   copy:
-#     src: ../docker/
-#     dest: /home/mresham/docker
-
 - name: Set docker-compose
   template:
     src: ../docker/compose-template.yml.j2

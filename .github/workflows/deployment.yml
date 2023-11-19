@@ -6,16 +6,10 @@ on:
       - main
       - dev
       - release*
-  
-  #TODO: remove after testing
-  pull_request:
-    branches:
-      - main
-      - dev
-      - release*
+
 
 env:
-  WORKSPACE: dev  #TODO: ${{ github.ref_name }}
+  WORKSPACE: ${{ github.ref_name }}
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
 jobs:
@@ -45,7 +39,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/coffee-project:dev #TODO: ${{ github.ref_name }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/coffee-project:${{ github.ref_name }}
           labels: ${{ steps.meta.outputs.labels }}
   
   terraform-provisioning:
@@ -101,7 +95,7 @@ jobs:
           ANSIBLE_HOST_KEY_CHECKING: False
         run: |
           external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}
-          ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham --extra-vars "docker_tag=dev"
+          ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham --extra-vars "docker_tag=${{ github.ref_name }}"
 
       # This is to avoid going over free tier in GCP. This would not exist in actual devops pipeline
       - name: Stop resources
