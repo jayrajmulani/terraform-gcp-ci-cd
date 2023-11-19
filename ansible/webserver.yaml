@@ -43,14 +43,14 @@
 #     src: ../coffee-project/
 #     dest: /home/mresham/coffee-project
 
-- name: Copy docker files
-  copy:
-    src: ../docker/
-    dest: /home/mresham/docker
+# - name: Copy docker files
+#   copy:
+#     src: ../docker/
+#     dest: /home/mresham/docker
 
 - name: Set docker-compose
   template:
-    src: /home/mresham/docker/compose-template.yml.j2
+    src: ../docker/compose-template.yml.j2
     dest: /home/mresham/docker/docker-compose.yml
 
 - name: Start Webserver docker

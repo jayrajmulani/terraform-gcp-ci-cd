@@ -15,7 +15,7 @@ on:
       - release*
 
 env:
-  WORKSPACE: dev
+  WORKSPACE: dev  #TODO: ${{ github.ref_name }}
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
 jobs:
