@@ -28,7 +28,7 @@ jobs:
         working-directory: ./terraform-files
 
       - name: Create Workspace
-        run: terraform workspace select -or-create=true $WORKSPACE
+        run: terraform workspace select -or-create=true ${{ inputs.WORKSPACE }}
         working-directory: ./terraform-files
 
       - name: Create plan
@@ -69,6 +69,6 @@ jobs:
       - name: Stop resources
         run: |
           terraform init
-          terraform workspace select $WORKSPACE
+          terraform workspace select ${{ inputs.WORKSPACE }}
           terraform apply -auto-approve -input=false -var="instance_desired_status=TERMINATED"
         working-directory: ./terraform-files
