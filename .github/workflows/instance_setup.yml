@@ -1,20 +1,21 @@
-name: Terraform Provisioning Workflow
+name: Create resources using terraform and setup using ansible
 
 on:
-  push:
-    branches:
-      - main
-      - dev
-      - release*
-
-env:
-  WORKSPACE: ${{github.ref_name}}
-  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+  workflow_call:
+    inputs:
+      WORKSPACE:
+        type: string
+        required: true
+    secrets:
+      GOOGLE_CREDENTIALS:
+        required: true
 
 jobs:
   terraform-provisioning:
     name: Create resources using terraform
     runs-on: self-hosted
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
     steps:
       - name: Check out Git repository
@@ -29,7 +30,7 @@ jobs:
         working-directory: ./terraform-files
 
       - name: Create Workspace
-        run: terraform workspace select -or-create=true $WORKSPACE
+        run: terraform workspace select -or-create=true ${{ inputs.WORKSPACE }}
         working-directory: ./terraform-files
 
       - name: Create plan
@@ -54,6 +55,8 @@ jobs:
     name: Configure server using ansible
     runs-on: self-hosted
     needs: terraform-provisioning
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
     steps:
       - name: Checkout Git repository
@@ -64,12 +67,12 @@ jobs:
           ANSIBLE_HOST_KEY_CHECKING: False
         run: |
           external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}
-          ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham
+          ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham --extra-vars "docker_tag=${{ inputs.WORKSPACE }}"
 
       # This is to avoid going over free tier in GCP. This would not exist in actual devops pipeline
       - name: Stop resources
         run: |
           terraform init
-          terraform workspace select $WORKSPACE
+          terraform workspace select ${{ inputs.WORKSPACE }}
           terraform apply -auto-approve -input=false -var="instance_desired_status=TERMINATED"
         working-directory: ./terraform-files

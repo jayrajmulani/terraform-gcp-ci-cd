@@ -11,7 +11,7 @@ docker run -d -p 3000:3000 --name coffee-project coffee-project:1.0.0
 ### Run docker image (using docker-compose)
 ```
 cd docker
-docker-compose up -d
+docker-compose -f compose-build.yml up -d
 ```
 
 ### Exec inside the docker
