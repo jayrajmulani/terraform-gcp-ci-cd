@@ -14,6 +14,8 @@ jobs:
   terraform-provisioning:
     name: Create resources using terraform
     runs-on: self-hosted
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
     steps:
       - name: Check out Git repository
@@ -34,8 +36,6 @@ jobs:
       - name: Create plan
         run: terraform plan -input=false
         working-directory: ./terraform-files
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
       - name: Create resources
         run: terraform apply -auto-approve -input=false
@@ -55,6 +55,8 @@ jobs:
     name: Configure server using ansible
     runs-on: self-hosted
     needs: terraform-provisioning
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
     steps:
       - name: Checkout Git repository
