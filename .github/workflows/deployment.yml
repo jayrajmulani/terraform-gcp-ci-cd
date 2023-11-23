@@ -1,82 +1,87 @@
 name: Deployment Workflow
 
 on:
-  push:
-    branches:
-      - main
-      - dev
-      - release*
-  pull_request:
-    branches:
-      - dev
+    push:
+        branches:
+            - main
+            - dev
+            - release*
+    pull_request:
+        branches:
+            - dev
 
 env:
-  WORKSPACE: ${{ github.ref_name }}
-  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+    WORKSPACE: dev
+    #  ${{ github.ref_name }}
 
 jobs:
-  docker-build:
-    uses: ./.github/workflows/docker_build.yml
+    docker-build:
+        uses: ./.github/workflows/docker_build.yml
+        with:
+            WORKSPACE: $WORKSPACE
+        secrets:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-  terraform-provisioning:
-    name: Create resources using terraform
-    runs-on: self-hosted
-    needs: docker-build
+    terraform-provisioning:
+        name: Create resources using terraform
+        runs-on: self-hosted
+        needs: docker-build
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
+        steps:
+            - name: Check out Git repository
+              uses: actions/checkout@v3
 
-      - name: Setup fresh SSH keys
-        run: |
-          ssh-keygen -t rsa -b 4096 -C "mresham" -f ~/.ssh/id_rsa -N '' <<< y
+            - name: Setup fresh SSH keys
+              run: |
+                  ssh-keygen -t rsa -b 4096 -C "mresham" -f ~/.ssh/id_rsa -N '' <<< y
 
-      - name: Initialize
-        run: terraform init
-        working-directory: ./terraform-files
+            - name: Initialize
+              run: terraform init
+              working-directory: ./terraform-files
 
-      - name: Create Workspace
-        run: terraform workspace select -or-create=true $WORKSPACE
-        working-directory: ./terraform-files
+            - name: Create Workspace
+              run: terraform workspace select -or-create=true $WORKSPACE
+              working-directory: ./terraform-files
 
-      - name: Create plan
-        run: terraform plan -input=false
-        working-directory: ./terraform-files
+            - name: Create plan
+              run: terraform plan -input=false
+              working-directory: ./terraform-files
 
-      - name: Create resources
-        run: terraform apply -auto-approve -input=false
-        working-directory: ./terraform-files
+            - name: Create resources
+              run: terraform apply -auto-approve -input=false
+              working-directory: ./terraform-files
 
-      - name: Output External IP
-        id: external_ip
-        run: |
-          terraform refresh
-          echo "::set-output name=external_ip::$(terraform output -raw external_ip)"
-        working-directory: ./terraform-files
+            - name: Output External IP
+              id: external_ip
+              run: |
+                  terraform refresh
+                  echo "::set-output name=external_ip::$(terraform output -raw external_ip)"
+              working-directory: ./terraform-files
 
-    outputs:
-      external_ip: ${{ steps.external_ip.outputs.external_ip }}
+        outputs:
+            external_ip: ${{ steps.external_ip.outputs.external_ip }}
 
-  ansible-configuration:
-    name: Configure server using ansible
-    runs-on: self-hosted
-    needs: terraform-provisioning
+    ansible-configuration:
+        name: Configure server using ansible
+        runs-on: self-hosted
+        needs: terraform-provisioning
 
-    steps:
-      - name: Checkout Git repository
-        uses: actions/checkout@v3
+        steps:
+            - name: Checkout Git repository
+              uses: actions/checkout@v3
 
-      - name: Trigger Ansible playbook
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: False
-        run: |
-          external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}
-          ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham --extra-vars "docker_tag=dev"
+            - name: Trigger Ansible playbook
+              env:
+                  ANSIBLE_HOST_KEY_CHECKING: False
+              run: |
+                  external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}
+                  ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham --extra-vars "docker_tag=dev"
 
-      # This is to avoid going over free tier in GCP. This would not exist in actual devops pipeline
-      - name: Stop resources
-        run: |
-          terraform init
-          terraform workspace select $WORKSPACE
-          terraform apply -auto-approve -input=false -var="instance_desired_status=TERMINATED"
-        working-directory: ./terraform-files
+            # This is to avoid going over free tier in GCP. This would not exist in actual devops pipeline
+            - name: Stop resources
+              run: |
+                  terraform init
+                  terraform workspace select $WORKSPACE
+                  terraform apply -auto-approve -input=false -var="instance_desired_status=TERMINATED"
+              working-directory: ./terraform-files
