@@ -8,7 +8,7 @@ on:
       - release*
   pull_request:
     branches:
-      - dev
+      - docker-build
 
 jobs:
   docker-build:
