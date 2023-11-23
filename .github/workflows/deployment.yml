@@ -8,13 +8,13 @@ on:
       - release*
   pull_request:
     branches:
-      - docker-build
+      - dev
 
 jobs:
   docker-build:
     uses: ./.github/workflows/docker_build.yml
     with:
-      WORKSPACE: dev #  ${{ github.ref_name }}
+      WORKSPACE: docker #  ${{ github.ref_name }}
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
