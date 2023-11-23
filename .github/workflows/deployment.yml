@@ -18,7 +18,7 @@ jobs:
   docker-build:
     uses: ./.github/workflows/docker_build.yml
     with:
-      WORKSPACE: ${{ env.WORKSPACE }}
+      WORKSPACE: dev
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
