@@ -7,7 +7,7 @@ docker run -it -v ~/.ssh:/root/.ssh ansible-control
 ```
 
 ```
-ansible-playbook -i ansible/hosts.yaml ansible/deployment.yaml
+ansible-playbook -i ansible/hosts.yaml ansible/deployment.yaml --extra-vars "docker_tag=WORKSPACE"
 ```
 
 ```
