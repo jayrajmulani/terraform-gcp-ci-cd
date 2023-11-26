@@ -66,8 +66,8 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: False
         run: |
-          external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}
-          ansible-playbook -i "${external_ip}," --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham --extra-vars "docker_tag=${{ inputs.WORKSPACE }}"
+          echo '{"webservers": {"hosts": {"${{ needs.terraform-provisioning.outputs.external_ip }}": null}}}' > ansible/inventory.json
+          ansible-playbook -i ansible/inventory.json --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham --extra-vars "docker_tag=${{ inputs.WORKSPACE }}"
 
       # This is to avoid going over free tier in GCP. This would not exist in actual devops pipeline
       - name: Stop resources
