@@ -8,7 +8,7 @@ http {
     lua_package_path "/path/to/lua-resty-upstream-healthcheck/lib/?.lua;;";
 
     upstream backend {
-        server 35.196.27.134;
+        server {{load_balancer_ip}};
     }
 
     # the size depends on the number of servers in upstream {}:

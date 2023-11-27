@@ -20,8 +20,8 @@
     state: directory
 
 - name: Copy conf file
-  copy:
-    src: load_balancer.conf
+  template:
+    src: load_balancer.conf.j2
     dest: /home/mresham/openresty/conf/nginx.conf
 
 - name: Stop Openresty(Nginx) service
