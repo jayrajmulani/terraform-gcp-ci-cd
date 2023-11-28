@@ -29,7 +29,7 @@
 	- Setup prometheus logging and monitoring (https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project-devops/issues/25)
 	- Autoscaling of resources based on Utilization (https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project-devops/issues/27)
 - Jayraj (jmulani2)
-	- Enable security check using `snyk` (https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project-devops/issues/24)
+	- Enable security check using static analysis tools like `nodejs-scan` / `wazuh` etc. (https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project-devops/issues/24)
 	- Enable rate limiting to prevent DoS / DDoS attacks (https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project-devops/issues/36)
 	- Update deprecated set-output to setOutput (https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project-devops/issues/35)
 - Mitanshu (mresham)
