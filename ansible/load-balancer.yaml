@@ -1,13 +1,15 @@
 - name: Install OpenResty(Nginx)
+  become: yes
+  become_method: sudo
   shell: |
-    sudo apt-get -y install --no-install-recommends wget gnupg ca-certificates
-    wget -O - https://openresty.org/package/pubkey.gpg | sudo apt-key add -
+    apt-get -y install --no-install-recommends wget gnupg ca-certificates
+    wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
     codename=`grep -Po 'VERSION="[0-9]+ \(\K[^)]+' /etc/os-release`
 
     echo "deb http://openresty.org/package/debian $codename openresty" \
-        | sudo tee /etc/apt/sources.list.d/openresty.list
-    sudo apt-get update
-    sudo apt-get -y install openresty
+        | tee /etc/apt/sources.list.d/openresty.list
+    apt-get update
+    apt-get -y install openresty
 
 - name: Creates Configuration folder
   ansible.builtin.file:
@@ -25,9 +27,13 @@
     dest: /home/mresham/openresty/conf/nginx.conf
 
 - name: Stop Openresty(Nginx) service
-  shell: sudo killall openresty
+  become: yes 
+  become_method: sudo
+  shell: killall openresty
   ignore_errors: true
 
 - name: Start Openresty(Nginx)
-  shell: sudo openresty -p /home/mresham/openresty -c conf/nginx.conf
+  become: yes
+  become_method: sudo
+  shell: openresty -p /home/mresham/openresty -c conf/nginx.conf
 
