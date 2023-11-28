@@ -33,3 +33,7 @@ jobs:
       - name: Create plan
         run: terraform plan -input=false -destroy
         working-directory: ./terraform-files
+      
+      - name: Destroy resources
+        run: terraform destroy -auto-approve -input=false
+        working-directory: ./terraform-files
