@@ -33,7 +33,6 @@
   become_method: sudo
   shell: |
     systemctl stop openresty
-    systemctl stop nginx
     killall openresty
   ignore_errors: true
 
