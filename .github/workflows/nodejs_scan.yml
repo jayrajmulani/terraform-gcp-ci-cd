@@ -15,9 +15,8 @@ name: Node.js Scan Static Analysis
 #     - 24-static-analysis
 
 on:
-  push:
-    branches:
-      - 24*
+  push
+
   # pull_request:
   #   branches:
   #     - main
