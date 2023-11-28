@@ -7,6 +7,7 @@ events {
 http {
     lua_package_path "/path/to/lua-resty-upstream-healthcheck/lib/?.lua;;";
 
+    # List of servers that the service will load balance
     upstream backend {
         server {{ external_ip }};
     }
@@ -52,6 +53,7 @@ http {
         listen 80;
         listen 443;
 
+        # Any route coming to this server will be proxied to the list of backend servers(default: round-robin)
         location / {
             proxy_pass http://backend;
             proxy_set_header Host $host;
