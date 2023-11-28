@@ -131,6 +131,6 @@ If this health-check fails, an alert is sent to the communication channels for t
 
 
 ### Additional Scope added after Feedback 1
-- Enable security check using `snyk` (https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project-devops/issues/24) - Eligible for bonus points
+- Enable security check using static analysis tools like `nodejs-scan` / `wazuh` etc. (https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project-devops/issues/24) - Eligible for bonus points
 - Enable rate limiting to prevent DoS / DDoS attacks (https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project-devops/issues/36) - Eligible for bonus points
 - Setup Prometheus logging and monitoring / visualization using Grafana (https://github.ncsu.edu/Devops-Terraform-Coffee/coffee-project-devops/issues/25)
