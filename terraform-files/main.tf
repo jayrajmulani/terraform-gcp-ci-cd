@@ -49,3 +49,27 @@ resource "google_compute_firewall" "coffee_firewall" {
   }
   source_ranges = ["0.0.0.0/0"]
 }
+
+
+# Health Check services
+resource "google_compute_instance" "load_balancer_resource" {
+  name           = "load-balancer-${terraform.workspace}"
+  machine_type   = var.machine_type
+  zone           = var.zone
+  desired_status = var.instance_desired_status
+  boot_disk {
+    initialize_params {
+      image = var.image
+    }
+  }
+  network_interface {
+    network = "default"
+    access_config {}
+  }
+
+  metadata = {
+    ssh-keys = "mresham:${file(var.public_key)}"
+  }
+
+  tags = ["coffee-project"]
+}

@@ -1,0 +1,39 @@
+- name: Install OpenResty(Nginx)
+  become: yes
+  become_method: sudo
+  shell: |
+    apt-get -y install --no-install-recommends wget gnupg ca-certificates
+    wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
+    codename=`grep -Po 'VERSION="[0-9]+ \(\K[^)]+' /etc/os-release`
+
+    echo "deb http://openresty.org/package/debian $codename openresty" \
+        | tee /etc/apt/sources.list.d/openresty.list
+    apt-get update
+    apt-get -y install openresty
+
+- name: Creates Configuration folder
+  ansible.builtin.file:
+    path: /home/mresham/openresty/conf
+    state: directory
+
+- name: Creates Logs directory
+  ansible.builtin.file:
+    path: /home/mresham/openresty/logs
+    state: directory
+
+- name: Copy conf file
+  template:
+    src: load_balancer.conf.j2
+    dest: /home/mresham/openresty/conf/nginx.conf
+
+- name: Stop Openresty(Nginx) service
+  become: yes 
+  become_method: sudo
+  shell: killall openresty
+  ignore_errors: true
+
+- name: Start Openresty(Nginx)
+  become: yes
+  become_method: sudo
+  shell: openresty -p /home/mresham/openresty -c conf/nginx.conf
+
