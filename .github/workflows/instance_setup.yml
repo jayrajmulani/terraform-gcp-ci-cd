@@ -75,8 +75,6 @@ jobs:
           ANSIBLE_HOST_KEY_CHECKING: False
         #TODO remove cat statement after debug
         run: |
-          # echo '{"all":{"children":{"webservers":{"hosts":{"${{ needs.terraform-provisioning.outputs.external_ip }}":null}},"loadbalancer":{"hosts":{"${{ needs.terraform-provisioning.outputs.load_balancer_ip }}":null}}}}}' > ansible/inventory.json
-          # cat ansible/inventory.json
           echo "" > ansible/inventory.yaml
           echo $'\n[webservers]\n${{ needs.terraform-provisioning.outputs.external_ip }}\n' >> ansible/inventory.yaml
           echo $'\n[loadbalancer]\n${{ needs.terraform-provisioning.outputs.load_balancer_ip }}\n' >> ansible/inventory.yaml
