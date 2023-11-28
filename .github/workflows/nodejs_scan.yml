@@ -23,5 +23,5 @@ jobs:
       - name: Run njsscan
         run: |
           pip install njsscan
-          njsscan .
+          /home/mresham/.local/bin/njsscan .
         working-directory: ./coffee-project
