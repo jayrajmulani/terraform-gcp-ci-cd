@@ -7,9 +7,11 @@
     codename=`grep -Po 'VERSION="[0-9]+ \(\K[^)]+' /etc/os-release`
 
     echo "deb http://openresty.org/package/debian $codename openresty" \
-        | tee /etc/apt/sources.list.d/openresty.list
+        | sudo tee /etc/apt/sources.list.d/openresty.list
     apt-get update
-    apt-get -y install openresty
+    apt-get -y install --no-install-recommends openresty
+  args:
+    warn: false
 
 - name: Creates Configuration folder
   ansible.builtin.file:
@@ -29,7 +31,9 @@
 - name: Stop Openresty(Nginx) service
   become: yes 
   become_method: sudo
-  shell: killall openresty
+  shell: |
+    systemctl stop openresty
+    killall openresty
   ignore_errors: true
 
 - name: Start Openresty(Nginx)

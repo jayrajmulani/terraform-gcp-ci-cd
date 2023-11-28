@@ -1,6 +1,6 @@
 ---
 - name: Deploy App
-  hosts: webservers
+  hosts: all
   become: yes
   become_method: sudo
   tasks:
