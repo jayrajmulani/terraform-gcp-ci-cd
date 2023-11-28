@@ -1,36 +1,26 @@
 name: Node.js Scan Static Analysis
 
-# on:
-#   push
-#   branches:
-#     - main
-#     - dev
-#     - release*
-#     - 24-static-analysis
-# pull_request:
-#   branches:
-#     - main
-#     - dev
-#     - release*
-#     - 24-static-analysis
-
 on:
-  push
-
-  # pull_request:
-  #   branches:
-  #     - main
-  #     - dev
-  #     - release*
+  push:
 
 jobs:
   nodejs-scan:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      - name: njsscan
-        id: njsscan
-        uses: ajinabraham/njsscan-action@master
+
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v3
         with:
-          args: "."
+          node-version: "16"
+
+      - name: Install nodejsscan
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+          cache: "pip" # caching pip dependencies
+        run: |
+          pip install njsscan
+          njsscan .
+        working-directory: ./coffee-project
