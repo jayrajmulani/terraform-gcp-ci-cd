@@ -1,0 +1,33 @@
+name: PR closed resource cleanup
+
+on:
+  pull_request:
+    # types:
+    #   - closed
+
+jobs:
+  terraform-destroy:
+    name: Destroy resources using terraform
+    runs-on: self-hosted
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Setup fresh SSH keys
+        run: |
+          ssh-keygen -t rsa -b 4096 -C "mresham" -f ~/.ssh/id_rsa -N '' <<< y
+
+      - name: Initialize
+        run: terraform init
+        working-directory: ./terraform-files
+
+      - name: Create Workspace
+        run: terraform workspace select -or-create=true ${{ github.ref_name }}
+        working-directory: ./terraform-files
+
+      - name: Create plan
+        run: terraform plan -input=false -destroy
+        working-directory: ./terraform-files
