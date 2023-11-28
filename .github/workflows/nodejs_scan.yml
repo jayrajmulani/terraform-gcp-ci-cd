@@ -17,12 +17,12 @@ name: Node.js Scan Static Analysis
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
-      - dev
-      - release*
+      - 24*
+  # pull_request:
+  #   branches:
+  #     - main
+  #     - dev
+  #     - release*
 
 jobs:
   nodejs-scan:
