@@ -2,6 +2,13 @@ name: Node.js Scan Static Analysis
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - dev
+      - release*
 
 jobs:
   nodejs-scan:
@@ -9,11 +16,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      # - name: Set up Node.js environment
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: "16"
 
       - name: Install node scanning tool
         uses: actions/setup-python@v4
