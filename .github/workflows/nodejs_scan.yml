@@ -18,18 +18,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Node.js environment
-        uses: actions/setup-node@v3
+      - name: njsscan
+        id: njsscan
+        working-directory: ./coffee-project
+        uses: ajinabraham/njsscan-action@master
         with:
-          node-version: "16"
-
-      - name: Install nodejsscan
-        run: |
-          curl -fsSL https://github.com/ajinabraham/nodejsscan/releases/download/latest/nodejsscan_latest_linux_amd64.tar.gz -o nodejsscan.tar.gz
-          tar -xf nodejsscan.tar.gz
-          chmod +x nodejsscan
-          sudo mv nodejsscan /usr/local/bin
-
-      - name: Run nodejsscan
-        run: nodejsscan -p coffee-project
+          args: "."
