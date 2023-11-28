@@ -16,7 +16,7 @@ jobs:
           node-version: "16"
 
       - name: Install node scanning tool
-      - uses: actions/setup-python@v4
+        uses: actions/setup-python@v4
         with:
           python-version: "3.9"
           cache: "pip"
