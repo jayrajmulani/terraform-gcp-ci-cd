@@ -14,7 +14,15 @@ name: Node.js Scan Static Analysis
 #     - release*
 #     - 24-static-analysis
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - dev
+      - release*
 
 jobs:
   nodejs-scan:
