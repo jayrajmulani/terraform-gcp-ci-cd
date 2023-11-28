@@ -29,7 +29,10 @@
 - name: Stop Openresty(Nginx) service
   become: yes 
   become_method: sudo
-  shell: killall openresty
+  shell: |
+    systemctl stop openresty
+    systemctl stop nginx
+    killall openresty
   ignore_errors: true
 
 - name: Start Openresty(Nginx)
