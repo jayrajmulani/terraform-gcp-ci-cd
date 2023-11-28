@@ -73,19 +73,16 @@ jobs:
       - name: Trigger Ansible playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: False
-        #TODO remove cat statement after debug
         run: |
           echo "" > ansible/inventory.yaml
           echo $'\n[webservers]\n${{ needs.terraform-provisioning.outputs.external_ip }}\n' >> ansible/inventory.yaml
           echo $'\n[loadbalancer]\n${{ needs.terraform-provisioning.outputs.load_balancer_ip }}\n' >> ansible/inventory.yaml
-          cat ansible/inventory.yaml
           ansible-playbook -i ansible/inventory.yaml --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham --extra-vars "docker_tag=${{ inputs.WORKSPACE }} external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}"
 
       # This is to avoid going over free tier in GCP. This would not exist in actual devops pipeline
-      # TODO uncomment after debug
-      # - name: Stop resources
-      #   run: |
-      #     terraform init
-      #     terraform workspace select ${{ inputs.WORKSPACE }}
-      #     terraform apply -auto-approve -input=false -var="instance_desired_status=TERMINATED"
-      #   working-directory: ./terraform-files
+      - name: Stop resources
+        run: |
+          terraform init
+          terraform workspace select ${{ inputs.WORKSPACE }}
+          terraform apply -auto-approve -input=false -var="instance_desired_status=TERMINATED"
+        working-directory: ./terraform-files

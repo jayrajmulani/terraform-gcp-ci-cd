@@ -10,6 +10,8 @@
         | sudo tee /etc/apt/sources.list.d/openresty.list
     apt-get update
     apt-get -y install --no-install-recommends openresty
+  args:
+    warn: false
 
 - name: Creates Configuration folder
   ansible.builtin.file:
