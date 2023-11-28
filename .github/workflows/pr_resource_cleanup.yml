@@ -2,8 +2,8 @@ name: PR closed resource cleanup
 
 on:
   pull_request_target:
-    branches:
-      - 'dev'
+    # branches:
+    #   - 'dev'
     # types:
     #   - closed
 
@@ -27,7 +27,7 @@ jobs:
         working-directory: ./terraform-files
 
       - name: Create Workspace
-        run: terraform workspace select -or-create=true ${{ GITHUB_HEAD_REF }}
+        run: terraform workspace select -or-create=true $GITHUB_HEAD_REF
         working-directory: ./terraform-files
 
       - name: Create plan
