@@ -16,10 +16,23 @@
       ansible.builtin.import_tasks:
         file: load-balancer.yaml
       when: inventory_hostname in groups["loadbalancer"]
-    
-    
+    - name: Include Prometheus configuration
+      ansible.builtin.import_tasks:
+        file: prometheus.yaml
+      when: inventory_hostname in groups["monitoring"]
+
+
   handlers:
     - name: Restart Nginx
       service:
         name: nginx
         state: restarted
+
+    - name: restart_prometheus
+      systemd:
+        name: prometheus
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+
+  

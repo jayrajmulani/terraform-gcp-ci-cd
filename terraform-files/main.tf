@@ -73,3 +73,25 @@ resource "google_compute_instance" "load_balancer_resource" {
 
   tags = ["coffee-project"]
 }
+
+resource "google_compute_instance" "monitoring_resource" {
+  name           = "monitoring-${terraform.workspace}"
+  machine_type   = var.machine_type
+  zone           = var.zone
+  desired_status = var.instance_desired_status
+  boot_disk {
+    initialize_params {
+      image = var.image
+    }
+  }
+  network_interface {
+    network = "default"
+    access_config {}
+  }
+
+  metadata = {
+    ssh-keys = "mresham:${file(var.public_key)}"
+  }
+
+  tags = ["coffee-project"]
+}
