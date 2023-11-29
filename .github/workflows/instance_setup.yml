@@ -65,7 +65,7 @@ jobs:
     outputs:
       external_ip: ${{ steps.external_ip.outputs.external_ip }}
       load_balancer_ip: ${{ steps.load_balancer_ip.outputs.load_balancer_ip }}
-      monitoring_ip: ${{ steps.load_balancer_ip.outputs.monitoring_ip }}
+      monitoring_ip: ${{ steps.monitoring_ip.outputs.monitoring_ip }}
 
   ansible-configuration:
     name: Configure server using ansible
