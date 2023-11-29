@@ -20,7 +20,10 @@
       ansible.builtin.import_tasks:
         file: prometheus.yaml
       when: inventory_hostname in groups["monitoring"]
-
+    - name: Include Grafana configuration
+      ansible.builtin.import_tasks:
+        file: grafana.yaml
+      when: inventory_hostname in groups["monitoring"]
 
   handlers:
     - name: Restart Nginx
