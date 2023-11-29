@@ -6,7 +6,7 @@
     cache_valid_time: 3600
 - name: prometheus configuration file
   template:
-    src: prometheus.yml.j2
+    src: prometheus.yaml.j2
     dest: "/etc/prometheus/prometheus.yml"
     mode: 0755
   notify: restart_prometheus
