@@ -97,7 +97,7 @@ resource "google_compute_instance" "monitoring_resource" {
 }
 
 resource "google_compute_firewall" "monitoring_firewall" {
-  name        = "allow-http-https-${terraform.workspace}"
+  name        = "allow-http-https-monitoring-${terraform.workspace}"
   target_tags = ["monitoring"]
   network     = "default"
   allow {
