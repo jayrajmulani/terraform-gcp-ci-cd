@@ -9,7 +9,7 @@ scrape_configs:
     scrape_interval: 5s
       static_configs:
       - targets:
-      {% for server in groups[webservers] %}
+      {% for server in webservers %}
         - {{ server }}:80
       {% endfor %}
 {% endif %}
