@@ -3,3 +3,6 @@
 
 [loadbalancer]
 35.231.2.23 ansible_user=mresham
+
+[monitoring]
+34.138.121.116 ansible_user=mresham

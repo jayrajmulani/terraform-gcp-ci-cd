@@ -11,7 +11,7 @@
     mode: 0755
   vars:
     webservers: "{{ groups['webservers'] }}"
-  notify: restart_prometheus
+  notify: Restart Prometheus
 - name: start prometheus
   systemd:
     name: prometheus

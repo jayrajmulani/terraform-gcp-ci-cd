@@ -32,3 +32,12 @@
   until: __result.status == 200
   retries: 120
   delay: 1
+- name: Import Grafana Dashboard
+  community.grafana.grafana_dashboard:
+    grafana_url: "http://127.0.0.1:3000"
+    grafana_user: admin
+    grafana_password: admin
+    folder: ""
+    overwrite: true
+    file: "webserver_dashboard.json"
+  notify: Restart Grafana
