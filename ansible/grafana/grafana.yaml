@@ -34,10 +34,11 @@
   delay: 1
 - name: Import Grafana Dashboard
   community.grafana.grafana_dashboard:
-    grafana_url: "http://127.0.0.1:3000"
-    grafana_user: admin
-    grafana_password: admin
+    url: "http://127.0.0.1:3000"
+    url_username: admin
+    url_password: admin
     folder: ""
     overwrite: true
-    file: "webserver_dashboard.json"
+    path: "webserver_dashboard.json"
+    commit_message: Added by ansible
   notify: Restart Grafana
