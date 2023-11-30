@@ -26,3 +26,4 @@ jobs:
       WORKSPACE: prom-graf # ${{ github.ref_name }}
     secrets:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}

@@ -12,4 +12,11 @@ scrape_configs:
       {% for server in webservers %}
         - {{ server }}:80
       {% endfor %}
+  - job_name: loadbalancer
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+      {% for server in loadbalancer %}
+        - {{ server }}:80
+      {% endfor %}
 {% endif %}
