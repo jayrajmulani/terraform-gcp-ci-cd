@@ -38,19 +38,19 @@
   retries: 120
   delay: 1
 
-- name: Create admin user
-  community.grafana.grafana_user:
-    url: http://localhost:3000
-    login: admin
-    name: admin
-    email: admin@localhost.com
-    password: "{{ GRAFANA_PASSWORD }}"
+# - name: Create admin user
+#   community.grafana.grafana_user:
+#     url: http://localhost:3000
+#     login: admin
+#     name: admin
+#     email: admin@localhost.com
+#     password: "{{ GRAFANA_PASSWORD }}"
   
 - name: Import Grafana Dashboard
   community.grafana.grafana_dashboard:
     url: http://localhost:3000
     url_username: admin
-    url_password: "{{ GRAFANA_PASSWORD }}"
+    url_password: admin
     overwrite: true
     path: "webserver_dashboard.json"
     commit_message: Added by ansible
