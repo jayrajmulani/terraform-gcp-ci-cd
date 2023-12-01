@@ -47,7 +47,7 @@ jobs:
           terraform refresh
           echo "external_ip=$(terraform output -raw external_ip)" >> $GITHUB_OUTPUT
         working-directory: ./terraform-files
-      
+
       - name: Output Load Balancer IP
         id: load_balancer_ip
         run: |
