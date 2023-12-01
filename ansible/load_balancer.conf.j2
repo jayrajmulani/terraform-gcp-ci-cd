@@ -69,7 +69,7 @@ http {
         location / {
             
             # Rate Limiting
-            limit_req zone=mylimit burst=5 nodelay;
+            limit_req zone=coffeelimit burst=5 nodelay;
             limit_req_status 429; # Set status code 429 (Too Many Requests) for exceeded limit
 
             proxy_pass http://backend;
