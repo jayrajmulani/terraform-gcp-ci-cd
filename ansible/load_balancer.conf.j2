@@ -12,6 +12,9 @@ http {
         server {{ external_ip }};
     }
 
+    # Rate Limit Zone - Define a key zone for rate limiting
+    limit_req_zone $binary_remote_addr zone=coffeelimit:10m rate=10r/s;
+
     # the size depends on the number of servers in upstream {}:
     lua_shared_dict healthcheck 1m;
 
@@ -47,6 +50,15 @@ http {
         -- more upstream groups to monitor. One call for one upstream group.
         -- They can all share the same shm zone without conflicts but they
         -- need a bigger shm zone for obvious reasons.
+
+        -- Rate Limiting Initialization
+        local lim = require "resty.limit.req"
+        local limit, err = lim.new("coffeelimit", 10, 5)
+        if not limit then
+            ngx.log(ngx.ERR, "failed to instantiate a resty.limit.req object: ", err)
+            return
+        end
+        ngx.ctx.limit_req = limit
     }
 
     server {
@@ -55,6 +67,20 @@ http {
 
         # Any route coming to this server will be proxied to the list of backend servers(default: round-robin)
         location / {
+            # Rate Limiting
+            access_by_lua_block {
+                local lim = ngx.ctx.limit_req
+                if lim then
+                    local key = ngx.var.binary_remote_addr
+                    local delay, err = lim:incoming(key, true)
+                    if not delay then
+                        if err == "rejected" then
+                            return ngx.exit(503)
+                        end
+                        ngx.log(ngx.ERR, "failed to limit req: ", err)
+                    end
+                end
+            }
             proxy_pass http://backend;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
