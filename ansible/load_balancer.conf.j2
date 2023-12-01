@@ -67,20 +67,11 @@ http {
 
         # Any route coming to this server will be proxied to the list of backend servers(default: round-robin)
         location / {
+            
             # Rate Limiting
-            access_by_lua_block {
-                local lim = ngx.ctx.limit_req
-                if lim then
-                    local key = ngx.var.binary_remote_addr
-                    local delay, err = lim:incoming(key, true)
-                    if not delay then
-                        if err == "rejected" then
-                            return ngx.exit(503)
-                        end
-                        ngx.log(ngx.ERR, "failed to limit req: ", err)
-                    end
-                end
-            }
+            limit_req zone=mylimit burst=5 nodelay;
+            limit_req_status 429; # Set status code 429 (Too Many Requests) for exceeded limit
+
             proxy_pass http://backend;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
