@@ -41,7 +41,9 @@
 - name: Create admin user
   community.grafana.grafana_user:
     url: http://localhost:3000
-    login: admin  
+    login: admin
+    name: admin
+    email: admin@localhost.com
     password: "{{ GRAFANA_PASSWORD }}"
   
 - name: Import Grafana Dashboard
