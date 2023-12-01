@@ -6,7 +6,6 @@ on:
       - main
       - dev
       - release*
-      - 36-rate-limiting
 
 jobs:
   docker-build:

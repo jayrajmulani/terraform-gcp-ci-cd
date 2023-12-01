@@ -80,9 +80,9 @@ jobs:
           ansible-playbook -i ansible/inventory.yaml --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham --extra-vars "docker_tag=${{ inputs.WORKSPACE }} external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}"
 
       # This is to avoid going over free tier in GCP. This would not exist in actual devops pipeline
-      # - name: Stop resources
-      #   run: |
-      #     terraform init
-      #     terraform workspace select ${{ inputs.WORKSPACE }}
-      #     terraform apply -auto-approve -input=false -var="instance_desired_status=TERMINATED"
-      #   working-directory: ./terraform-files
+      - name: Stop resources
+        run: |
+          terraform init
+          terraform workspace select ${{ inputs.WORKSPACE }}
+          terraform apply -auto-approve -input=false -var="instance_desired_status=TERMINATED"
+        working-directory: ./terraform-files
