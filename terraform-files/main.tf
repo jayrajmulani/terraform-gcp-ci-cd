@@ -36,7 +36,7 @@ resource "google_compute_instance" "coffee_compute_resource" {
     ssh-keys = "mresham:${file(var.public_key)}"
   }
 
-  tags = ["coffee-project"]
+  tags = ["coffee-project", "coffee-server"]
 }
 
 resource "google_compute_firewall" "coffee_firewall" {
@@ -71,5 +71,38 @@ resource "google_compute_instance" "load_balancer_resource" {
     ssh-keys = "mresham:${file(var.public_key)}"
   }
 
-  tags = ["coffee-project"]
+  tags = ["coffee-project", "load-balancer"]
+}
+
+resource "google_compute_instance" "monitoring_resource" {
+  name           = "monitoring-${terraform.workspace}"
+  machine_type   = var.machine_type
+  zone           = var.zone
+  desired_status = var.instance_desired_status
+  boot_disk {
+    initialize_params {
+      image = var.image
+    }
+  }
+  network_interface {
+    network = "default"
+    access_config {}
+  }
+
+  metadata = {
+    ssh-keys = "mresham:${file(var.public_key)}"
+  }
+
+  tags = ["coffee-project", "monitoring"]
+}
+
+resource "google_compute_firewall" "monitoring_firewall" {
+  name        = "allow-http-https-monitoring-${terraform.workspace}"
+  target_tags = ["monitoring"]
+  network     = "default"
+  allow {
+    protocol = "tcp"
+    ports    = ["9090", "3000"]
+  }
+  source_ranges = ["0.0.0.0/0"]
 }

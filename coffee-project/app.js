@@ -2,12 +2,27 @@
 
 const express = require("express");
 const { coffees, orders } = require("./data");
+const promBundle = require("express-prom-bundle");
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 app.use(express.static("public"));
+// Add the options to the prometheus middleware
+const metricsMiddleware = promBundle({
+  includeMethod: true,
+  includePath: true,
+  includeStatusCode: true,
+  includeUp: true,
+  customLabels: { project_name: "coffee-project" },
+  promClient: {
+    collectDefaultMetrics: {},
+  },
+});
+// add the prometheus middleware to all routes
+app.use(metricsMiddleware);
+
 module.exports = app;
 
 // Endpoint to fetch available coffees

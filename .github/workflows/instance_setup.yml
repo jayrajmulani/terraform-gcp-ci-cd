@@ -55,9 +55,17 @@ jobs:
           echo "load_balancer_ip=$(terraform output -raw load_balancer_ip)" >> $GITHUB_OUTPUT
         working-directory: ./terraform-files
 
+      - name: Output Monitoring IP
+        id: monitoring_ip
+        run: |
+          terraform refresh
+          echo "monitoring_ip=$(terraform output -raw monitoring_ip)" >> $GITHUB_OUTPUT
+        working-directory: ./terraform-files
+
     outputs:
       external_ip: ${{ steps.external_ip.outputs.external_ip }}
       load_balancer_ip: ${{ steps.load_balancer_ip.outputs.load_balancer_ip }}
+      monitoring_ip: ${{ steps.monitoring_ip.outputs.monitoring_ip }}
 
   ansible-configuration:
     name: Configure server using ansible
@@ -77,6 +85,7 @@ jobs:
           echo "" > ansible/inventory.yaml
           echo $'\n[webservers]\n${{ needs.terraform-provisioning.outputs.external_ip }}\n' >> ansible/inventory.yaml
           echo $'\n[loadbalancer]\n${{ needs.terraform-provisioning.outputs.load_balancer_ip }}\n' >> ansible/inventory.yaml
+          echo $'\n[monitoring]\n${{ needs.terraform-provisioning.outputs.monitoring_ip }}\n' >> ansible/inventory.yaml
           ansible-playbook -i ansible/inventory.yaml --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham --extra-vars "docker_tag=${{ inputs.WORKSPACE }} external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}"
 
       # This is to avoid going over free tier in GCP. This would not exist in actual devops pipeline

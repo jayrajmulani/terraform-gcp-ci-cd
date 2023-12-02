@@ -45,7 +45,7 @@
 
 - name: Set docker-compose
   template:
-    src: ../docker/compose-template.yml.j2
+    src: ../../docker/compose-template.yml.j2
     dest: /home/mresham/docker/docker-compose.yml
 
 - name: Start Webserver docker
