@@ -3,7 +3,7 @@ name: AutoRelease
 on:
   push:
     branches:
-      - dead
+      - main
 
 jobs:
   release:
