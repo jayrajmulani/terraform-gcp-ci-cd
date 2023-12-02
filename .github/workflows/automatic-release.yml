@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       # Pass env variable to docker run GITHUB_PERSONAL_TOKEN
-      - run: sudo apt install jq
+      - run: sudo apt install jq -y
       - run: |
           LAST_COMMIT_HASH=$(git rev-parse HEAD)
           PR_INFO=$(curl -H "Authorization: Bearer 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" \
