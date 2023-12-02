@@ -46,12 +46,17 @@
 #     email: admin@localhost.com
 #     password: "{{ GRAFANA_PASSWORD }}"
   
+- name: grafana dashboards file
+  copy:
+    src: webserver_dashboard.json
+    dest: /etc/grafana/webserver_dashboard.json
+
 - name: Import Grafana Dashboard
   community.grafana.grafana_dashboard:
     url: http://localhost:3000
     url_username: admin
     url_password: admin
     overwrite: true
-    path: "grafana/webserver_dashboard.json"
+    path: /etc/grafana/webserver_dashboard.json
     commit_message: Added by ansible
   notify: Restart Grafana
