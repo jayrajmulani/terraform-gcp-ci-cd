@@ -1,11 +1,12 @@
 name: Deployment Workflow
 
 on:
-  push:
-    branches:
-      - main
-      - dev
-      - release*
+  push
+  # :
+  #   branches:
+  #     - main
+  #     - dev
+  #     - release*
 
 jobs:
   docker-build:
