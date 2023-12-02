@@ -6,15 +6,12 @@ on:
       - main
       - dev
       - release*
-  pull_request:
-    branches:
-      - dev
 
 jobs:
   docker-build:
     uses: ./.github/workflows/docker_build.yml
     with:
-      WORKSPACE: prom-graf # ${{ github.ref_name }}
+      WORKSPACE: ${{ github.ref_name }}
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -23,7 +20,7 @@ jobs:
     uses: ./.github/workflows/instance_setup.yml
     needs: docker-build
     with:
-      WORKSPACE: prom-graf # ${{ github.ref_name }}
+      WORKSPACE: ${{ github.ref_name }}
     secrets:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
       GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
