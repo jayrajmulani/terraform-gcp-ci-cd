@@ -1,0 +1,5 @@
+[webservers]
+35.196.27.134 ansible_user=mresham
+
+[loadbalancer]
+35.231.2.23 ansible_user=mresham

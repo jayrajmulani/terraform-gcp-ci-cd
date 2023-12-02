@@ -1,0 +1,25 @@
+---
+- name: Deploy App
+  hosts: all
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Include webserver task list
+      ansible.builtin.import_tasks:
+        file: webserver.yaml
+      when: inventory_hostname in groups["webservers"]
+    - name: Include Nginx configuration
+      ansible.builtin.import_tasks:
+        file: nginx.yaml
+      when: inventory_hostname in groups["webservers"]
+    - name: Include Load Balancer configuration
+      ansible.builtin.import_tasks:
+        file: load-balancer.yaml
+      when: inventory_hostname in groups["loadbalancer"]
+    
+    
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted

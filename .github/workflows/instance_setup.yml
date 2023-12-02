@@ -1,0 +1,88 @@
+name: Create resources using terraform and setup using ansible
+
+on:
+  workflow_call:
+    inputs:
+      WORKSPACE:
+        type: string
+        required: true
+    secrets:
+      GOOGLE_CREDENTIALS:
+        required: true
+
+jobs:
+  terraform-provisioning:
+    name: Create resources using terraform
+    runs-on: self-hosted
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Setup fresh SSH keys
+        run: |
+          ssh-keygen -t rsa -b 4096 -C "mresham" -f ~/.ssh/id_rsa -N '' <<< y
+
+      - name: Initialize
+        run: terraform init
+        working-directory: ./terraform-files
+
+      - name: Create Workspace
+        run: terraform workspace select -or-create=true ${{ inputs.WORKSPACE }}
+        working-directory: ./terraform-files
+
+      - name: Create plan
+        run: terraform plan -input=false
+        working-directory: ./terraform-files
+
+      - name: Create resources
+        run: terraform apply -auto-approve -input=false
+        working-directory: ./terraform-files
+
+      - name: Output External IP
+        id: external_ip
+        run: |
+          terraform refresh
+          echo "external_ip=$(terraform output -raw external_ip)" >> $GITHUB_OUTPUT
+        working-directory: ./terraform-files
+
+      - name: Output Load Balancer IP
+        id: load_balancer_ip
+        run: |
+          terraform refresh
+          echo "load_balancer_ip=$(terraform output -raw load_balancer_ip)" >> $GITHUB_OUTPUT
+        working-directory: ./terraform-files
+
+    outputs:
+      external_ip: ${{ steps.external_ip.outputs.external_ip }}
+      load_balancer_ip: ${{ steps.load_balancer_ip.outputs.load_balancer_ip }}
+
+  ansible-configuration:
+    name: Configure server using ansible
+    runs-on: self-hosted
+    needs: terraform-provisioning
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+    steps:
+      - name: Checkout Git repository
+        uses: actions/checkout@v3
+
+      - name: Trigger Ansible playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+        run: |
+          echo "" > ansible/inventory.yaml
+          echo $'\n[webservers]\n${{ needs.terraform-provisioning.outputs.external_ip }}\n' >> ansible/inventory.yaml
+          echo $'\n[loadbalancer]\n${{ needs.terraform-provisioning.outputs.load_balancer_ip }}\n' >> ansible/inventory.yaml
+          ansible-playbook -i ansible/inventory.yaml --private-key=~/.ssh/id_rsa ansible/deployment.yaml -e ansible_user=mresham --extra-vars "docker_tag=${{ inputs.WORKSPACE }} external_ip=${{ needs.terraform-provisioning.outputs.external_ip }}"
+
+      # This is to avoid going over free tier in GCP. This would not exist in actual devops pipeline
+      - name: Stop resources
+        run: |
+          terraform init
+          terraform workspace select ${{ inputs.WORKSPACE }}
+          terraform apply -auto-approve -input=false -var="instance_desired_status=TERMINATED"
+        working-directory: ./terraform-files

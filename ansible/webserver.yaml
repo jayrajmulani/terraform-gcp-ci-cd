@@ -1,0 +1,62 @@
+- name: Install docker dependencies 
+  apt:
+    name: 
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg2
+        - software-properties-common
+        - python3-pip
+    state: latest
+    update_cache: yes
+
+- name: Add Docker's official GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Set up the stable repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+    state: present
+
+- name: Install docker
+  apt:
+    name: 
+      - docker-ce
+    state: present
+
+- name: Run docker
+  service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add python packages for ansible docker
+  ansible.builtin.pip:
+    name: 
+      - docker 
+      - docker-compose
+
+- name: Creates directory
+  ansible.builtin.file:
+    path: /home/mresham/docker
+    state: directory
+
+- name: Set docker-compose
+  template:
+    src: ../docker/compose-template.yml.j2
+    dest: /home/mresham/docker/docker-compose.yml
+
+- name: Start Webserver docker
+  community.docker.docker_compose:
+    project_src: /home/mresham/docker
+    state: present
+    
+- name: Wait for 200s for node server to load on port 3000
+  wait_for:
+    port: 3000                                    # Check for port 3000
+    delay: 3                                      # check only after 3s
+    timeout: 200                                  # Only wait for 200s. Default is 300
+    msg: "HTTP Timeout on port 3000. No response" # Show custom message on failure
+  register: port_check

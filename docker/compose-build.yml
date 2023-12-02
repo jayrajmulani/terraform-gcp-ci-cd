@@ -1,0 +1,8 @@
+services:
+    coffee-project:
+        image: coffee-project:latest
+        build:
+            context: ./../
+            dockerfile: ./docker/Dockerfile
+        ports:
+            - "3000:3000"

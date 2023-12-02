@@ -1,0 +1,41 @@
+name: Lint and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - dev
+      - release* 
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: self-hosted
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 21
+          
+      - name: Install Node.js dependencies
+        working-directory: ./coffee-project
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: ./coffee-project
+        run: npx eslint .
+
+      - name: Run Prettier
+        working-directory: ./coffee-project
+        run: npx prettier . --check
+        
+      - name: Run tests
+        working-directory: ./coffee-project
+        run: npm test

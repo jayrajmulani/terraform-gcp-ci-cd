@@ -1,0 +1,25 @@
+name: Deployment Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - release*
+
+jobs:
+  docker-build:
+    uses: ./.github/workflows/docker_build.yml
+    with:
+      WORKSPACE: ${{ github.ref_name }}
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  instance-setup:
+    uses: ./.github/workflows/instance_setup.yml
+    needs: docker-build
+    with:
+      WORKSPACE: ${{ github.ref_name }}
+    secrets:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
