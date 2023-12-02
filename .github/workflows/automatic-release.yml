@@ -15,7 +15,7 @@ jobs:
       - run: sudo apt install jq -y
       - run: |
           LAST_COMMIT_HASH=$(git rev-parse HEAD)
-          PR_INFO=$(curl -H "Authorization: Bearer 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" \
+          PR_INFO=$(curl -H "Authorization: Bearer ${{ secrets.PERSONAL_SECRET_TOKEN }}" \
             "https://github.ncsu.edu/api/v3/repos/${{github.repository}}/commits/$LAST_COMMIT_HASH/pulls")
           PR_COUNT=$(echo "$PR_INFO" | jq length)
 
