@@ -11,7 +11,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      # Pass env variable to docker run GITHUB_PERSONAL_TOKEN
       - run: sudo apt install jq -y
       - run: |
           LAST_COMMIT_HASH=$(git rev-parse HEAD)
@@ -24,6 +23,13 @@ jobs:
             PR_NAME=$(echo "$PR_INFO" | jq -r '.[].title' | grep Release)
             RELEASE_NUMBER=$(echo $PR_NAME | cut -d'-' -f2 | tr -s ' ')
             echo "v$RELEASE_NUMBER"
+            RELEASE_TAG=$(echo "v$RELEASE_NUMBER")
+
+            curl -L \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.PERSONAL_SECRET_TOKEN }}" \
+            https://github.ncsu.edu/api/v3/repos/${{github.repository}}/releases \
+            -d "{\"tag_name\":\"${RELEASE_TAG}\",\"target_commitish\":\"main\",\"name\":\"${RELEASE_TAG}\",\"generate_release_notes\":true}"
           else
             echo "No associated PRs found for the commit."
           fi
