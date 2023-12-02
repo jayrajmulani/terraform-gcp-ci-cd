@@ -1,0 +1,29 @@
+name: AutoRelease
+
+on:
+  push:
+    branches:
+      - dead
+
+jobs:
+  release:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v3
+      # Pass env variable to docker run GITHUB_PERSONAL_TOKEN
+      - run: sudo apt install jq
+      - run: |
+          LAST_COMMIT_HASH=$(git rev-parse HEAD)
+          PR_INFO=$(curl -H "Authorization: Bearer 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" \
+            "https://github.ncsu.edu/api/v3/repos/${{github.repository}}/commits/$LAST_COMMIT_HASH/pulls")
+          PR_COUNT=$(echo "$PR_INFO" | jq length)
+
+          if [ "$PR_COUNT" -gt 0 ]; then
+            echo "PR names associated with the commit:"
+            PR_NAME=$(echo "$PR_INFO" | jq -r '.[].title' | grep Release)
+            RELEASE_NUMBER=$(echo $PR_NAME | cut -d'-' -f2 | tr -s ' ')
+            echo "v$RELEASE_NUMBER"
+          else
+            echo "No associated PRs found for the commit."
+          fi
