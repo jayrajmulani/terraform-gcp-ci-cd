@@ -1,6 +1,14 @@
 name: Lint ansible code
 
-on: push
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - dev
+      - release*
 
 jobs:
   ansible-lint:
