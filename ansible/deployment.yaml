@@ -1,29 +1,29 @@
 ---
 - name: Deploy App
   hosts: all
-  become: yes
-  become_method: sudo
+  become: true
+  become_method: ansible.builtin.sudo
   tasks:
     - name: Include webserver task list
       ansible.builtin.import_tasks:
         file: webserver/webserver.yaml
       when: inventory_hostname in groups["webservers"]
-    
+
     - name: Include Nginx configuration
       ansible.builtin.import_tasks:
         file: nginx/nginx.yaml
       when: inventory_hostname in groups["webservers"]
-    
+
     - name: Include Load Balancer configuration
       ansible.builtin.import_tasks:
         file: load_balancer/load-balancer.yaml
       when: inventory_hostname in groups["loadbalancer"]
-    
+
     - name: Include Prometheus configuration
       ansible.builtin.import_tasks:
         file: prometheus/prometheus.yaml
       when: inventory_hostname in groups["monitoring"]
-    
+
     - name: Include Grafana configuration
       ansible.builtin.import_tasks:
         file: grafana/grafana.yaml
@@ -31,21 +31,19 @@
 
   handlers:
     - name: Restart Nginx
-      service:
+      ansible.builtin.service:
         name: nginx
         state: restarted
 
     - name: Restart Prometheus
-      systemd:
+      ansible.builtin.systemd:
         name: prometheus
         state: restarted
-        enabled: yes
-        daemon_reload: yes
-    
+        enabled: true
+        daemon_reload: true
+
     - name: Restart Grafana
-      systemd:
+      ansible.builtin.systemd:
         name: grafana-server
         state: restarted
-        enabled: yes
-
-  
+        enabled: true

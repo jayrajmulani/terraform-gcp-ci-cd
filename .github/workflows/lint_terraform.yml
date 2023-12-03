@@ -1,0 +1,28 @@
+name: Lint terraform code
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - dev
+      - release*
+
+jobs:
+  tflint:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install tflint
+        run: |
+          sudo curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+      - name: Lint files
+        run: |
+          /usr/local/bin/tflint --recursive
+        working-directory: ./terraform-files
