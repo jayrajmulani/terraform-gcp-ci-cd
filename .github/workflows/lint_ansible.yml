@@ -13,9 +13,12 @@ jobs:
       - name: Install ansible-lint
         run: pip3 install ansible-lint
 
-      - name: Lint Ansible playbooks
+      - name: Install Ansible Collections
         run: |
           ansible-galaxy collection install community.grafana 
-          ansible-galaxy collection install community.docker 
-          find . -type f -name "*.yaml" ! -name "hosts.yaml" | ansible-lint --exclude=hosts.yaml
+          ansible-galaxy collection install community.docker
+
+      - name: Lint Ansible playbooks
+        run: |
+          find . -type f -name "*.yaml" ! -name "hosts.yaml" -exec ansible-lint --exclude=hosts.yaml {} +
         working-directory: ./ansible
