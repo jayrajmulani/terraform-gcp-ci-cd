@@ -1,0 +1,26 @@
+name: Lint ansible code
+
+on: push
+
+jobs:
+  ansible-lint:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x" # Replace with the Python version you need
+
+      - name: Install ansible-lint
+        run: pip install ansible-lint
+
+      - name: Lint Ansible playbooks
+        run: |
+          ansible-galaxy collection install community.grafana 
+          ansible-galaxy collection install community.docker 
+          find . -type f -name "*.yaml" ! -name "hosts.yaml" | ansible-lint --exclude=hosts.yaml
+        working-directory: ./ansible
