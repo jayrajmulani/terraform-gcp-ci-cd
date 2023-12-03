@@ -25,7 +25,7 @@ http {
 
         local ok, err = hc.spawn_checker {
             shm = "healthcheck",  -- defined by "lua_shared_dict"
-            upstream = "foo.com", -- defined by "upstream"
+            upstream = "backend", -- defined by "upstream"
             type = "http", -- support "http" and "https"
 
             http_req = "GET /status HTTP/1.0\r\nHost: foo.com\r\n\r\n",
