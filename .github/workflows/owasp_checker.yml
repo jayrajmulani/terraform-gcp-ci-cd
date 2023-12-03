@@ -18,4 +18,4 @@ jobs:
 
       - name: Scan dependencies
         run: |
-          dependency-check/bin/dependency-check.sh --project "coffee-project" --scan ./coffee-project --format "HTML" --out ./coffee-project -n
+          dependency-check/bin/dependency-check.sh --project "coffee-project" --scan ./coffee-project --format "HTML" --out ./coffee-project --nvdApiKey ${{ secrets.NVD_API_KEY }} --nvdApiDelay 16000
