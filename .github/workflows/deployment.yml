@@ -6,7 +6,6 @@ on:
       - main
       - dev
       - release*
-      - 19-linting
 
 jobs:
   docker-build:
