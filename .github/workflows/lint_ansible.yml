@@ -22,5 +22,5 @@ jobs:
         run: |
           ansible-galaxy collection install community.grafana 
           ansible-galaxy collection install community.docker 
-          find . -type f -name "*.yaml" ! -name "hosts.yaml" | ansible-lint --exclude=hosts.yaml
+          find . -type f -name "*.yaml" ! -name "hosts.yaml" | python -m ansible-lint --exclude=hosts.yaml
         working-directory: ./ansible
