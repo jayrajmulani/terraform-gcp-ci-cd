@@ -45,7 +45,7 @@
 
 - name: Import Grafana Dashboard
   community.grafana.grafana_dashboard:
-    url: "http://localhost:3000"
+    grafana_url: "http://localhost:3000"
     overwrite: true
     path: /etc/grafana/webserver_dashboard.json
     commit_message: Added by ansible
