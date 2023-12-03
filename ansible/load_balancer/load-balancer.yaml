@@ -38,7 +38,8 @@
   become: true
   become_method: ansible.builtin.sudo
   ansible.builtin.command: killall openresty
-  failed_when: false
+  ignore_errors: true
+  register: ignore_errors_register
 
 - name: Stop Openresty(Nginx) service
   changed_when: true
