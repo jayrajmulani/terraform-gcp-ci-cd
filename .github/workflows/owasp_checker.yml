@@ -1,0 +1,21 @@
+name: OWASP Dependency Checker
+
+on: push
+
+jobs:
+  dependency-checking:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependency checker
+        run: |
+          VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
+          curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output dependency-check.zip
+          unzip -o dependency-check.zip
+
+      - name: Scan dependencies
+        run: |
+          dependency-check/bin/dependency-check.sh --project "coffee-project" --scan ./coffee-project --format "HTML" --out ./coffee-project -n
