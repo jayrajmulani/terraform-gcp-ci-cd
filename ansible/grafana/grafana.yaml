@@ -35,8 +35,8 @@
     status_code: 200
   register: __result
   until: __result.status == 200
-  retries: 120
-  delay: 1
+  retries: 12
+  delay: 10
 
 - name: Grafana dashboards file
   ansible.builtin.copy:
@@ -46,9 +46,7 @@
 
 - name: Import Grafana Dashboard
   community.grafana.grafana_dashboard:
-    url: http://localhost:3000
-    url_username: admin
-    url_password: admin
+    grafana_url: "http://localhost:3000"
     overwrite: true
     path: /etc/grafana/webserver_dashboard.json
     commit_message: Added by ansible
