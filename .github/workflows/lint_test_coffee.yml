@@ -1,14 +1,16 @@
 name: Lint and Test
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-      - dev
-      - release* 
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+#       - dev
+#       - release*
+
+on: push
 
 jobs:
   run-linters:
@@ -18,12 +20,12 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
-        
+
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 21
-          
+
       - name: Install Node.js dependencies
         working-directory: ./coffee-project
         run: npm ci
@@ -35,7 +37,7 @@ jobs:
       - name: Run Prettier
         working-directory: ./coffee-project
         run: npx prettier . --check
-        
+
       - name: Run tests
         working-directory: ./coffee-project
         run: npm test
