@@ -1,0 +1,29 @@
+name: Lint ansible code
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - dev
+      - release*
+
+jobs:
+  ansible-lint:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Ansible Collections
+        run: |
+          ansible-galaxy collection install community.grafana 
+          ansible-galaxy collection install community.docker
+
+      - name: Lint Ansible playbooks
+        run: |
+          find . -type f -name "*.yaml" ! -name "hosts.yaml" -exec python3 -m ansiblelint --exclude=hosts.yaml {} +
+        working-directory: ./ansible

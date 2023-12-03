@@ -1,0 +1,53 @@
+- name: Install gpg
+  ansible.builtin.apt:
+    name: gnupg,software-properties-common
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Add gpg hey
+  ansible.builtin.apt_key:
+    url: "https://packages.grafana.com/gpg.key"
+    validate_certs: false
+
+- name: Add repository
+  ansible.builtin.apt_repository:
+    repo: "deb https://packages.grafana.com/oss/deb stable main"
+    state: present
+    validate_certs: false
+
+- name: Install grafana
+  ansible.builtin.apt:
+    name: grafana
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Start service grafana-server
+  ansible.builtin.systemd:
+    name: grafana-server
+    state: started
+    enabled: true
+
+- name: Wait for service up
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:3000"
+    status_code: 200
+  register: __result
+  until: __result.status == 200
+  retries: 12
+  delay: 10
+
+- name: Grafana dashboards file
+  ansible.builtin.copy:
+    src: webserver_dashboard.json
+    dest: /etc/grafana/webserver_dashboard.json
+    mode: "0755"
+
+- name: Import Grafana Dashboard
+  community.grafana.grafana_dashboard:
+    grafana_url: "http://localhost:3000"
+    overwrite: true
+    path: /etc/grafana/webserver_dashboard.json
+    commit_message: Added by ansible
+  notify: Restart Grafana
