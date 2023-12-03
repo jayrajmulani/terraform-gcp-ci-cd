@@ -17,5 +17,5 @@ jobs:
 
       - name: Lint Ansible playbooks
         run: |
-          find . -type f -name "*.yaml" ! -name "hosts.yaml" | ansible-lint --exclude=hosts.yaml
+          find . -type f -name "*.yaml" ! -name "hosts.yaml" | sudo ansible-lint --exclude=hosts.yaml
         working-directory: ./ansible
