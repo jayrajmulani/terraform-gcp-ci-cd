@@ -22,12 +22,9 @@ jobs:
 
       - name: Install tflint
         run: |
-          curl -L "$(curl -s https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_386\.zip")" -o tflint.zip
-          unzip tflint.zip
-          sudo mv tflint /usr/local/bin/
-          rm tflint.zip
+          sudo curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
       - name: Lint files
         run: |
-          tflint
+          tflint --recursive
         working-directory: ./terraform-files
