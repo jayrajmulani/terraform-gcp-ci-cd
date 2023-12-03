@@ -3,7 +3,6 @@
   become: true
   become_method: ansible.builtin.sudo
   ansible.builtin.shell: |
-    set -eo pipefail
     apt-get -y install --no-install-recommends wget gnupg ca-certificates
     wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
     codename=`grep -Po 'VERSION="[0-9]+ \(\K[^)]+' /etc/os-release`
