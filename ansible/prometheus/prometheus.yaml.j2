@@ -1,0 +1,24 @@
+#jinja2: lstrip_blocks: "True"
+
+global:
+  scrape_interval: "5s"
+  evaluation_interval: 5s
+scrape_configs:
+{% if webservers %}
+  - job_name: webservers
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+      {% for server in webservers %}
+        - {{ server }}:80
+      {% endfor %}
+{% endif %}      
+{% if loadbalancer %}
+  - job_name: loadbalancer
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+      {% for server in loadbalancer %}
+        - {{ server }}:80
+      {% endfor %}
+{% endif %}
