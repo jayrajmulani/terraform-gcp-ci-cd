@@ -1,5 +1,5 @@
 - name: Install OpenResty(Nginx)
-  changed_when: false
+  changed_when: true
   become: true
   become_method: ansible.builtin.sudo
   ansible.builtin.shell: |
@@ -33,14 +33,21 @@
     dest: /home/mresham/openresty/conf/nginx.conf
     mode: "0755"
 
-- name: Stop Openresty(Nginx) service
+- name: Kill Openresty(Nginx) services (if any)
   changed_when: false
+  become: true
+  become_method: ansible.builtin.sudo
+  ansible.builtin.command: killall openresty
+  failed_when: false
+
+- name: Stop Openresty(Nginx) service
+  changed_when: true
   ansible.builtin.systemd:
     name: openresty
     state: stopped
 
 - name: Start Openresty(Nginx)
-  changed_when: false
+  changed_when: true
   become: true
   become_method: ansible.builtin.sudo
   ansible.builtin.command: openresty -p /home/mresham/openresty -c conf/nginx.conf
