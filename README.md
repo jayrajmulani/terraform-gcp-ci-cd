@@ -94,6 +94,10 @@ Find install scripts for Debian 11 [here](scripts/)
 - GOOGLE_CREDENTIALS: GCP credentials json file for service account
 - PERSONAL_SECRET_TOKEN: Personal Access Token(PAT) from Github with repo access
 
+### Workflows
+- [Ansible workflow](ansible/)
+- [Github workflows](.github/workflows/)
+
 ### Running Locally
 1. [Coffee-project setup](coffee-project/README.md)
 2. [Build Docker image](docker/README.md)
