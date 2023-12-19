@@ -2,6 +2,10 @@
 
 This repository contains scripts and configurations for setting up an automated DevOps pipeline leveraging Terraform, Ansible, Nginx, Prometheus, and Grafana.
 
+## Working Demonstration
+
+[![Video](https://github.com/jayrajmulani/terraform-gcp-ci-cd/assets/39649967/c8d71f67-5428-4aad-a272-cc2b890dce09)](https://www.youtube.com/watch?v=HmnuikkLcec)
+
 
 ## Features
 
